@@ -6,7 +6,7 @@ This repository contains only the source code of the project. For effectively co
 
 Bright souls is a "Dark Souls" clone with Adaptive Game Technology. This means that the game will dynamically change it's gameplay and interface based on the player style.
 
-![Demonstration Video](https://www.youtube.com/watch?v=Bb5UT-x0mGg)
+[Demonstration Video](https://www.youtube.com/watch?v=Bb5UT-x0mGg)
 
 ### Features: ### 
 * Static and Dynamic Player Modelling; 
