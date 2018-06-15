@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
 
-public class LockOnDetector : MonoBehaviour, IObserver {
+public class LockOnDetector : MonoBehaviour {
 
     private Player owner;
-    public List<Character> possibleTargets;
+    private List<Character> possibleTargets;
+    public List<Character> PossibleTargets {
+        get {
+            List<Character> targets = new List<Character>(possibleTargets);
+            targets.RemoveAll((Character c) => { return c.IsInAnyState(States.Dead) || !c.GetComponentInChildren<Renderer>().isVisible; });
+            return targets;
+        }
+    }
 
     private void Start()
     {
@@ -38,14 +45,9 @@ public class LockOnDetector : MonoBehaviour, IObserver {
             possibleTargets.Remove(character);
     }
 
-    public void OnNotification(object sender, Message msg, params object[] args)
+    public void RefreshTargets()
     {
-        if(msg == Message.Combat_Death)
-        {
-            Character c = (Character)sender;
-            if (possibleTargets.Contains(c))
-                possibleTargets.Remove(c);
-        }
+        possibleTargets.RemoveAll((Character c) => { return c.IsInAnyState(States.Dead); });
     }
 
 }

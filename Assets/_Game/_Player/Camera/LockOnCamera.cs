@@ -8,7 +8,8 @@ public class LockOnCamera : PlayerCamera
 
     public Vector3 lockOnOffset;
 
-    private float lockOnChangeTargetDeadzone = 0.25f;
+    private float accumX = 0f;
+    private float maxSideLookDist = 3f;
     
     
     public Transform LockOnTarget {
@@ -36,11 +37,16 @@ public class LockOnCamera : PlayerCamera
         if (LockOnTarget == null)
             return;
 
-        if (Mathf.Abs(mx) > lockOnChangeTargetDeadzone * Time.deltaTime)
-            LockOnTarget = player.Combat.GetLockOnTarget(mx).transform;
+        accumX += mx * Time.deltaTime;
+        accumX = Mathf.Clamp(accumX, -1f, 1f);
+        Quaternion modifRot = Quaternion.Euler(0f, accumX * 30f, 0f);
+        if(Mathf.Abs(mx) < 0.1f)
+            accumX = Mathf.Lerp(accumX, 0f, 5f * Time.deltaTime);
 
-        var lookRot = Quaternion.LookRotation((LockOnTarget.position - transform.position).normalized, Vector3.up);
-        var targetPos = player.transform.position + (Quaternion.LookRotation((LockOnTarget.position - player.transform.position).normalized, Vector3.up) * lockOnOffset).normalized * camDistance;
+        var lookRot = modifRot * Quaternion.LookRotation((LockOnTarget.position - transform.position).normalized, Vector3.up);
+        var targetPos = player.transform.position 
+            + (Quaternion.LookRotation((LockOnTarget.position - player.transform.position).normalized, Vector3.up) * lockOnOffset).normalized 
+            * camDistance;
         transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, 50f * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, targetPos, 15f * Time.deltaTime);
     }

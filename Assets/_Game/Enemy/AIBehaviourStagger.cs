@@ -7,6 +7,7 @@ public class AIBehaviourStagger : AIBehaviour
 
     public override void BehaviourStart()
     {
+        owner.ResetAllTriggers();
         owner.SetMovementControl(AICharacter.MovementControlType.Animator);
     }
 

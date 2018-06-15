@@ -31,37 +31,19 @@ MonoBehaviour:
       stereoPan: 0
       delay: 0.15
   - effect: 153
-    clip: {fileID: 8300000, guid: 3aa7f76b7e94fd94895e9cc1317da1bd, type: 3}
+    clip: {fileID: 8300000, guid: e326c70131d3743f682e92213908e683, type: 3}
     options:
       priority: 128
-      volume: 0.7
+      volume: 0.9
       pitch: 1
       pitchVariance: 0
       stereoPan: 0
       delay: 0
   - effect: 154
-    clip: {fileID: 8300000, guid: 7c2ff3281f8482c4b92ea1f94d685664, type: 3}
+    clip: {fileID: 8300000, guid: 67046ce8c700f4d70b9608ab6fe5d98f, type: 3}
     options:
       priority: 128
-      volume: 0.7
-      pitch: 1
-      pitchVariance: 0
-      stereoPan: 0
-      delay: 0
-  - effect: 155
-    clip: {fileID: 8300000, guid: e9b40a9520ebfc94aba0c4584e7b4d0b, type: 3}
-    options:
-      priority: 128
-      volume: 0.8
-      pitch: 1
-      pitchVariance: 0.2
-      stereoPan: 0
-      delay: 0
-  - effect: 156
-    clip: {fileID: 8300000, guid: c3c95ac93a858ea478fa667958f84f8c, type: 3}
-    options:
-      priority: 128
-      volume: 0.8
+      volume: 0.9
       pitch: 1
       pitchVariance: 0
       stereoPan: 0
@@ -89,6 +71,33 @@ MonoBehaviour:
     options:
       priority: 128
       volume: 0.9
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 177
+    clip: {fileID: 8300000, guid: 0c72fc8770d5e3c4e936b5e036f5d4c7, type: 3}
+    options:
+      priority: 128
+      volume: 1
+      pitch: 0.85
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 178
+    clip: {fileID: 0}
+    options:
+      priority: 128
+      volume: 1
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 205
+    clip: {fileID: 8300000, guid: 8a072739919123d45bb9eb22d7782ef5, type: 3}
+    options:
+      priority: 128
+      volume: 0.7
       pitch: 1
       pitchVariance: 0
       stereoPan: 0

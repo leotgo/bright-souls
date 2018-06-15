@@ -207,38 +207,6 @@ MonoBehaviour:
   stateMachine: 2
   condition: 0
   nextState: 
---- !u!114 &114073897301634230
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ede7f1b785980524495ace52b2ac9760, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  events:
-  - trigger: 1
-    time: 0.15
-    message: 13
-    args: 
-  - trigger: 1
-    time: 0.15
-    message: 16
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.15
-    message: 17
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.3
-    message: 18
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.3
-    message: 4
-    args: SwordShield_Light
 --- !u!114 &114078562816367552
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -259,21 +227,6 @@ MonoBehaviour:
     time: 0.9
     message: 301
     args: 
---- !u!114 &114098610998727330
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30ca50d82f921ca4f8f7b3f2f36f29b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetState: 6
-  stateMachine: 2
-  condition: 0
-  nextState: 
 --- !u!114 &114152774743913564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -535,38 +488,6 @@ MonoBehaviour:
   stateMachine: 2
   condition: 0
   nextState: 
---- !u!114 &114899697662523112
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ede7f1b785980524495ace52b2ac9760, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  events:
-  - trigger: 1
-    time: 0.15
-    message: 13
-    args: 
-  - trigger: 1
-    time: 0.2
-    message: 16
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.2
-    message: 17
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.3
-    message: 18
-    args: SwordShield_Light
-  - trigger: 1
-    time: 0.3
-    message: 4
-    args: SwordShield_Light
 --- !u!114 &114938334393299964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -969,30 +890,6 @@ BlendTree:
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 1
---- !u!1101 &1101014716793486694
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: attack_light
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102800844249160778}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.080304325
-  m_TransitionOffset: 0
-  m_ExitTime: 0.53359044
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1101 &1101076590444973980
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1009,6 +906,30 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.73188984
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &1101151180791432654
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: attack_light
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102431505969554844}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.14944959
+  m_TransitionOffset: 0
+  m_ExitTime: 0.50725704
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1218,51 +1139,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &1101326629858646064
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions: []
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 0}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 1
-  serializedVersion: 3
-  m_TransitionDuration: 0.09023577
-  m_TransitionOffset: 0
-  m_ExitTime: 0.71543694
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101350008690952160
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: attack_light
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102940371309901900}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.080112815
-  m_TransitionOffset: 0
-  m_ExitTime: 0.51780605
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1101 &1101385183832234054
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1417,7 +1293,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.016444862
+  m_TransitionDuration: 0.009337544
   m_TransitionOffset: 0
   m_ExitTime: 0.83578104
   m_HasExitTime: 0
@@ -1480,30 +1356,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 1
   serializedVersion: 3
-  m_TransitionDuration: 0.09335208
+  m_TransitionDuration: 0.08352506
   m_TransitionOffset: 0
-  m_ExitTime: 0.70691764
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101517163168531846
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions: []
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 0}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 1
-  serializedVersion: 3
-  m_TransitionDuration: 0.08817583
-  m_TransitionOffset: 0
-  m_ExitTime: 0.6852279
+  m_ExitTime: 0.5176033
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1618,9 +1473,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.076003075
+  m_TransitionDuration: 0.23873895
   m_TransitionOffset: 0
-  m_ExitTime: 0.49722883
+  m_ExitTime: 0.4799938
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1804,9 +1659,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.07902914
   m_TransitionOffset: 0
-  m_ExitTime: 0.75
+  m_ExitTime: 0.74999994
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1897,9 +1752,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 1
   serializedVersion: 3
-  m_TransitionDuration: 0.09798026
+  m_TransitionDuration: 0.06936401
   m_TransitionOffset: 0
-  m_ExitTime: 0.635119
+  m_ExitTime: 0.48680642
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1918,7 +1773,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.100595295
+  m_TransitionDuration: 0.042937636
   m_TransitionOffset: 0
   m_ExitTime: 0.48749995
   m_HasExitTime: 1
@@ -2054,11 +1909,11 @@ AnimatorState:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Sword_Attack_RL
-  m_Speed: 1
+  m_Speed: 0.9
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 1101014716793486694}
   - {fileID: 1101852249647215224}
+  - {fileID: 1101151180791432654}
   m_StateMachineBehaviours:
   - {fileID: 114567912005087590}
   m_Position: {x: 50, y: 50, z: 0}
@@ -2218,7 +2073,7 @@ AnimatorState:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Sword_Attack_R
-  m_Speed: 1
+  m_Speed: 0.9
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101677706132012898}
@@ -2453,34 +2308,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &1102800844249160778
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Sword_Attack_RLLR
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 1101350008690952160}
-  - {fileID: 1101517163168531846}
-  m_StateMachineBehaviours:
-  - {fileID: 114073897301634230}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9dd7842a2a4824a41b03ae585b78a341, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1102 &1102817752841502210
 AnimatorState:
   serializedVersion: 5
@@ -2582,34 +2409,6 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 0}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &1102940371309901900
-AnimatorState:
-  serializedVersion: 5
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Sword_Attack_RLL
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 1101326629858646064}
-  m_StateMachineBehaviours:
-  - {fileID: 114098610998727330}
-  - {fileID: 114899697662523112}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: efea78416920f754aba996295cc115e5, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2728,16 +2527,10 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102431505969554844}
-    m_Position: {x: 252, y: 120, z: 0}
+    m_Position: {x: 348, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102111835909989510}
-    m_Position: {x: 492, y: 120, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 1102940371309901900}
-    m_Position: {x: 960, y: 120, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 1102800844249160778}
-    m_Position: {x: 732, y: 120, z: 0}
+    m_Position: {x: 720, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

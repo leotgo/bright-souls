@@ -10,7 +10,7 @@ using Patterns.Observer;
 /// - Receives input and process action
 /// - Notifies messages for every Character-related component in Observer system
 /// </summary>
-public class Player : Character, IObserver
+public class Player : Character, IObserver, IInputReceiver
 {
     [SerializeField] private PlayerData saveData;
 
@@ -66,17 +66,27 @@ public class Player : Character, IObserver
         Cursor.visible = !focus;
     }
 
-    private void Update()
+    public void OnInputStart()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
+    public void OnInput()
+    {
         if (Input.GetButtonDown("QuickSave"))
-        {
-            saveData.SaveAll();
-            GameData.self.Save(5);
-        }
+            this.Notify(Message.System_SaveData);
         if (Input.GetButtonDown("QuickLoad"))
-            GameData.self.Load(5);
+            this.Notify(Message.System_LoadData);
+        if (Input.GetKeyDown(KeyCode.Escape))
+            this.Notify(Message.System_TogglePause);
+        if (Input.GetKeyDown(KeyCode.R))
+            this.Notify(Message.System_ReloadScene);
+    }
+
+    public void OnInputEnd()
+    {
+
     }
 
     public void OnNotification(object sender, Message msg, params object[] args)

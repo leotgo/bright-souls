@@ -35,3 +35,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Lightmap Files
+*LightingData.asset
+*.exr
+
+# Project binaries
+*.png

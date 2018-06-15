@@ -8,9 +8,9 @@ public class StaminaBehaviour : MonoBehaviour
 
     private Player player;
 
-    private float recoverAmount = 18f;
+    [SerializeField] private float recoverAmount = 18f;
     private float bonusRecover = 0f;
-    private float recoverDelay = 2f;
+    [SerializeField] private float recoverDelay = 2f;
 
     private float blockRecoverModifier = 0.35f;
     private float recoverDelayTime = 0f;

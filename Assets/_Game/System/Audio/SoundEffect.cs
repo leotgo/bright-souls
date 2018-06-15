@@ -21,11 +21,14 @@ public enum SFXName
     SFX_Player_Bleed1,
     SFX_Player_CutEnemy1 = 175,
     SFX_Player_CutEnemy2,
+    SFX_Player_BlockedHit,
+    SFX_Player_BlockBreak,
     SFX_Enemy_StepBase = 200,
     SFX_Enemy_Hurt1,
     SFX_Enemy_Hurt2,
     SFX_Enemy_Cut1,
-    SFX_Enemy_Cut2
+    SFX_Enemy_Cut2,
+    SFX_Enemy_HitShield,
 }
 
 [System.Serializable]

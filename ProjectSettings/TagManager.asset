@@ -22,7 +22,7 @@ TagManager:
   - Hitbox
   - Floor
   - InvisibleWalls
-  - 
+  - CharacterInteractor
   - 
   - 
   - 

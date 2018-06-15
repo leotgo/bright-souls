@@ -10,6 +10,7 @@ public class AIBehaviourSeek : AIBehaviour {
     private float updateTimer = 0f;
 
     public override void BehaviourStart() {
+        owner.ResetAllTriggers();
         updateTimer = targetPosUpdateInterval;
         owner.navAgent.isStopped = false;
         owner.CurrentMoveSpeed = owner.runMoveSpeed;

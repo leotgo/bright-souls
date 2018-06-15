@@ -25,14 +25,37 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
     private float blockBreakDamageModifier = 0.2f;
     private LockOnDetector detector;
 
+    public AttackCommand attack;
+    public BlockCommand block;
+    public DodgeCommand dodge;
+    public LockOnCommand lockOn;
+    public LockOnChangeCommand lockOnChange;
+    private float lockOnChangeMx = 0.5f;
+    private float accumMx = 0f;
+
     private void Start()
     {
         this.player = GetComponent<Player>();
         detector = player.GetComponentInChildren<LockOnDetector>();
+
+        attack = new AttackCommand(this.player);
+        block = new BlockCommand(this.player);
+        dodge = new DodgeCommand(this.player);
+        lockOn = new LockOnCommand(this.player);
+        lockOnChange = new LockOnChangeCommand(this.player);
     }
 
     private void Update()
     {
+        accumMx += Input.GetAxisRaw("Mouse X") * Time.deltaTime;
+        if (Mathf.Abs(accumMx) > lockOnChangeMx && LockOnTarget != null)
+        {
+            accumMx = 0f;
+            if (lockOnChange.IsValid())
+                lockOnChange.Execute(accumMx);
+        }
+        accumMx = Mathf.Lerp(accumMx, 0f, Time.deltaTime);
+
         if (!player.IsInAnyState(States.Dodging))
             RotationUpdate();
 
@@ -40,21 +63,23 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
             if (LockOnTarget.IsInAnyState(States.Dead))
                 LockOnTarget = null;
 
-        if (Input.GetButtonDown("Jump"))
-            Dodge();
+        if (Input.GetButtonDown("Dodge"))
+            if (dodge.IsValid())
+                dodge.Execute();
         if (Input.GetButtonDown("LightAttack"))
-            Attack(0);
+            if (attack.IsValid())
+                attack.Execute(0);
         if (Input.GetButtonDown("HeavyAttack"))
-            Attack(1);
+            if (attack.IsValid())
+                attack.Execute(1);
         if (Input.GetButtonDown("LockOn"))
-        {
-            if (!LockOnTarget)
-                LockOnTarget = GetLockOnTarget(0f);
-            else
-                LockOnTarget = null;
-        }
+            if (lockOn.IsValid())
+                lockOn.Execute();
 
-        Block(Input.GetButton("Block"));
+
+
+        if(block.IsValid())
+            block.Execute(Input.GetButton("Block"));
     }
 
     public void OnGetHit(Attack attack)
@@ -67,7 +92,6 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
             {
                 if (HasBlockedAttack(attack))
                 {
-                    Debug.Log("Player blocked attack " + attack.Name + " from " + attack.Source.name);
                     player.Stamina.Value -= (float)meleeAtk.blockStaminaDamage;
                     if (player.Stamina.Value <= 0f)
                     {
@@ -110,7 +134,6 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
             return false;
     }
 
-    // Will Depend on Camera Type
     private void RotationUpdate()
     {
         Vector3 fwd = (!LockOnTarget) ? Camera.main.transform.forward : (LockOnTarget.transform.position - transform.position).normalized;
@@ -118,46 +141,100 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(fwd, Vector3.up), 15f * Time.deltaTime);
     }
 
-    private void Dodge()
+    public class AttackCommand : PlayerCommand<int>
     {
-        if (player.IsInAnyState(States.Attacking, States.Dodging, States.Falling, States.Jumping, States.Landing, States.Comboing, States.ComboEnding, States.Blocking, States.Stagger, States.Dead))
-            return;
+        public AttackCommand(Player owner) : base(owner) { }
 
-        if (player.Stamina.Value <= 0f)
-            return;
-
-        Vector2 dodgeDir = GetDodgeDirection();
-        Vector3 camFwd = UnityEngine.Camera.main.transform.forward;
-        camFwd = (new Vector3(camFwd.x, 0f, camFwd.z)).normalized;
-        if (dodgeDir.y < 0.1f)
+        public override bool IsValid()
         {
-            dodgeDir.Set(dodgeDir.x * -1f, dodgeDir.y);
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f) * Quaternion.LookRotation(camFwd, Vector3.up);
-        }
-        else
-        {
-            transform.rotation = Quaternion.LookRotation(camFwd, Vector3.up);
+            return !player.IsInAnyState(States.Dodging, States.Attacking, States.ComboEnding, States.Jumping, States.Blocking, States.Stagger, States.Dead)
+                && player.Stamina.Value > 0f;
         }
 
-        player.anim.SetFloat("dodge_x", dodgeDir.x);
-        player.anim.SetFloat("dodge_y", dodgeDir.y);
-        player.anim.SetTrigger("dodge");
-    }
-
-    private void Attack(int id)
-    {
-        if (!player.IsInAnyState(States.Dodging, States.Attacking, States.ComboEnding, States.Jumping, States.Blocking, States.Stagger, States.Dead))
-        {
-            var weapon = GetComponentInChildren<Weapon>();
-            weapon.OnAttack(id);
+        public override void Execute(int attackId)
+        { 
+            var weapon = player.GetComponentInChildren<Weapon>();
+            weapon.OnAttack(attackId);
         }
     }
 
-    private void Block(bool block)
+    public class BlockCommand : PlayerCommand<bool>
     {
-        if (player.IsInAnyState(States.Attacking, States.Dodging, States.Falling, States.Jumping, States.Landing, States.Comboing, States.ComboEnding, States.Stagger, States.Dead))
-            return;
-        player.anim.SetBool("block", block);
+        public BlockCommand(Player owner) : base(owner) { }
+
+        public override bool IsValid()
+        {
+            return !player.IsInAnyState(States.Attacking, States.Dodging, States.Falling, States.Jumping, States.Landing, States.Comboing, States.ComboEnding, States.Stagger, States.Dead);
+        }
+
+        public override void Execute(bool block)
+        {
+            player.anim.SetBool("block", block);
+        }
+    }
+
+    public class DodgeCommand : PlayerCommand
+    {
+        public DodgeCommand(Player player) : base(player) { }
+
+        public override bool IsValid()
+        {
+            return !player.IsInAnyState(States.Attacking, States.Dodging, States.Falling, States.Jumping, States.Landing, States.Comboing, States.ComboEnding, States.Blocking, States.Stagger, States.Dead)
+                && player.Stamina.Value > 0f;
+        }
+
+        public override void Execute()
+        {
+            Vector2 dodgeDir = GetDodgeDirection();
+            Vector3 camFwd = UnityEngine.Camera.main.transform.forward;
+            camFwd = (new Vector3(camFwd.x, 0f, camFwd.z)).normalized;
+            if (dodgeDir.y < 0.1f)
+            {
+                dodgeDir.Set(dodgeDir.x * -1f, dodgeDir.y);
+                player.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * Quaternion.LookRotation(camFwd, Vector3.up);
+            }
+            else
+            {
+                player.transform.rotation = Quaternion.LookRotation(camFwd, Vector3.up);
+            }
+
+            player.anim.SetFloat("dodge_x", dodgeDir.x);
+            player.anim.SetFloat("dodge_y", dodgeDir.y);
+            player.anim.SetTrigger("dodge");
+        }
+    }
+
+    public class LockOnCommand : PlayerCommand
+    {
+        public LockOnCommand(Player player) : base(player) { }
+
+        public override bool IsValid()
+        {
+            return player.Combat.detector.PossibleTargets.Count > 0;
+        }
+
+        public override void Execute()
+        {
+            if (!player.Combat.LockOnTarget)
+                player.Combat.LockOnTarget = player.Combat.GetLockOnTarget(0f);
+            else
+                player.Combat.LockOnTarget = null;
+        }
+    }
+
+    public class LockOnChangeCommand : PlayerCommand<float>
+    {
+        public LockOnChangeCommand(Player player) : base (player) { }
+
+        public override bool IsValid()
+        {
+            return player.Combat.detector.PossibleTargets.Count > 1;
+        }
+
+        public override void Execute(float dir)
+        {
+            player.Combat.LockOnTarget = player.Combat.GetLockOnTarget(dir);
+        }
     }
 
     private static Vector2 GetDodgeDirection()
@@ -176,7 +253,8 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
     {
         Character closestInDir = LockOnTarget;
         float diffToCenter = 1.0f;
-        foreach (var target in detector.possibleTargets)
+        detector.RefreshTargets();
+        foreach (var target in detector.PossibleTargets)
         {
             if (target != LockOnTarget)
             {

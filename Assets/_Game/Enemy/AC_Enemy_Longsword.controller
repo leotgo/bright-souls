@@ -113,8 +113,8 @@ MonoBehaviour:
     time: 0
     message: 11
     args: 
-  - trigger: 1
-    time: 0.8
+  - trigger: 2
+    time: 0
     message: 12
     args: 
 --- !u!114 &114151193180699498
@@ -147,12 +147,32 @@ MonoBehaviour:
   events:
   - trigger: 1
     time: 0.35
+    message: 13
+    args: 
+  - trigger: 1
+    time: 0.35
     message: 17
     args: Longsword_Heavy
   - trigger: 1
     time: 0.45
     message: 18
     args: Longsword_Heavy
+--- !u!114 &114399012203993368
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede7f1b785980524495ace52b2ac9760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  events:
+  - trigger: 2
+    time: 0
+    message: 4
+    args: Longsword_Special
 --- !u!114 &114423003944360544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -172,10 +192,6 @@ MonoBehaviour:
   - trigger: 1
     time: 0.3
     message: 18
-    args: Longsword_Special
-  - trigger: 2
-    time: 0
-    message: 4
     args: Longsword_Special
 --- !u!114 &114676138642951468
 MonoBehaviour:
@@ -263,12 +279,20 @@ MonoBehaviour:
   events:
   - trigger: 1
     time: 0.15
+    message: 13
+    args: 
+  - trigger: 1
+    time: 0.15
     message: 17
     args: Longsword_Light
   - trigger: 1
     time: 0.25
     message: 18
     args: Longsword_Light
+  - trigger: 1
+    time: 0.4
+    message: 13
+    args: 
   - trigger: 1
     time: 0.4
     message: 17
@@ -534,9 +558,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.13053817
-  m_TransitionOffset: 0.05376657
-  m_ExitTime: 0.07658495
+  m_TransitionDuration: 0.07167934
+  m_TransitionOffset: 0.046038568
+  m_ExitTime: 0.071175344
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 2
@@ -555,7 +579,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.3531747
+  m_TransitionDuration: 0.65506124
   m_TransitionOffset: 0
   m_ExitTime: 0.72609305
   m_HasExitTime: 1
@@ -576,7 +600,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.3303392
+  m_TransitionDuration: 0.38812208
   m_TransitionOffset: 0
   m_ExitTime: 0.8491987
   m_HasExitTime: 1
@@ -711,9 +735,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.27783012
   m_TransitionOffset: 0
-  m_ExitTime: 0.8951049
+  m_ExitTime: 0.89510494
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -761,8 +785,8 @@ AnimatorStateTransition:
   m_ExitTime: 0.9302434
   m_HasExitTime: 0
   m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
+  m_InterruptionSource: 2
+  m_OrderedInterruption: 0
   m_CanTransitionToSelf: 1
 --- !u!1101 &1101827795504312578
 AnimatorStateTransition:
@@ -870,7 +894,7 @@ AnimatorState:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Combo_Tell
-  m_Speed: 0.4
+  m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101069098403560532}
@@ -931,6 +955,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101106108650194402}
   m_StateMachineBehaviours:
+  - {fileID: 114399012203993368}
   - {fileID: 114423003944360544}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0

@@ -15,15 +15,14 @@ public class AIBehaviourCombatMovement : AIBehaviour
 
     private float turnSpeed = 4f;
 
-    public float attackCooldown = 4f;
+    [SerializeField] private float minimalAttackCooldown = 0.5f;
+    [SerializeField] private float defaultAttackCooldown = 3f;
     public float defenseDelay = 1.5f;
     public float dodgeChance = 0.35f;
 
-    private float dashAttackThreshold = 1.5f;
+    private float dashAttackThreshold = 4f;
 
-    private int lightAttackChance = 60;
-    private int heavyAttackChance = 30;
-    private int dashAttackChance = 10;
+    private int lightAttackChance = 70;
 
     // Private Fields
 
@@ -91,7 +90,10 @@ public class AIBehaviourCombatMovement : AIBehaviour
 
     private void ChooseAttack()
     {
-        if (fsm.CurrentStateTime > attackCooldown)
+        bool canAttack =
+            (fsm.CurrentStateTime > defaultAttackCooldown) ||
+            (owner.Target.IsInAnyState(States.Attacking, States.Comboing) && owner.GetDistanceToTarget() < maxTargetDistance && fsm.CurrentStateTime > minimalAttackCooldown);
+        if (canAttack)
         {
             if (owner.Target.IsInAnyState(States.Blocking))
             {
@@ -107,14 +109,12 @@ public class AIBehaviourCombatMovement : AIBehaviour
                     int rand = Random.Range(0, 100);
                     if (rand < lightAttackChance)
                         owner.nextAttack = 0;
-                    else if (rand < lightAttackChance + heavyAttackChance)
-                        owner.nextAttack = 1;
                     else
-                        owner.nextAttack = 2;
+                        owner.nextAttack = 1;
                 }
             }
 
-            fsm.SetState(States.Attacking);
+            owner.Notify(Message.AI_StartAttack);
         }
     }
 }

@@ -114,7 +114,10 @@ public class AICharacter : Character, IHitter, IHittable
             meleeAtk = (MeleeAttack)attack;
             var damage = Random.Range(meleeAtk.minDamage, meleeAtk.maxDamage);
             this.Health -= damage;
-            GetComponent<StaggerBehaviour>().StaggerHealth -= meleeAtk.staggerDamage;
+            if (Health > 0f)
+            {
+                GetComponent<StaggerBehaviour>().StaggerHealth -= meleeAtk.staggerDamage;
+            }
             meleeAtk.Source.Notify(Message.Combat_HitEnemy, this);
             this.Notify(Message.Combat_GotHit);
             Time.timeScale = 0.2f;
@@ -141,6 +144,16 @@ public class AICharacter : Character, IHitter, IHittable
     {
         var weapon = GetComponentInChildren<Weapon>();
         weapon.OnAttack(attackId);
+    }
+
+    public void ResetAllTriggers()
+    {
+        animator.ResetTrigger("hit");
+        animator.ResetTrigger("stagger");
+        animator.ResetTrigger("death");
+        animator.ResetTrigger("attack_light");
+        animator.ResetTrigger("attack_heavy");
+        animator.ResetTrigger("attack_dash");
     }
 
 

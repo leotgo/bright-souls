@@ -47,11 +47,11 @@ public class StaggerBehaviour : MonoBehaviour
     }
     public uint dodgeBonusHealth = 50;
 
-    private int maxConsecutiveStaggers = 3;
+    [SerializeField] private int maxConsecutiveStaggers = 3;
     private int staggerCounter = 0;
-    private float staggerRecoverDelay = 3f;
+    private float staggerRecoverDelay = 1f;
     private TimerAction staggerRecover;
-    public float staggerInvincibilityTime = 2.5f;
+    [SerializeField] private float staggerInvincibilityTime = 2.5f;
     private TimerAction staggerInvincibilityStop;
 
     private void Start()

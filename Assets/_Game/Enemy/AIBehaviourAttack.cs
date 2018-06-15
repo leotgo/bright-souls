@@ -8,6 +8,7 @@ public class AIBehaviourAttack : AIBehaviour {
 
     public override void BehaviourStart()
     {
+        owner.SetMovementControl(AICharacter.MovementControlType.Animator);
         owner.Attack(owner.nextAttack);
     }
 
