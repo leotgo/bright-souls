@@ -1,4 +1,11 @@
 {
-	"dependencies": {
-	}
+  "dependencies": {
+    "com.unity.ads": "exclude",
+    "com.unity.purchasing": "exclude",
+    "com.unity.probuilder": "3.0.9",
+    "com.unity.progrids": "3.0.3-preview.0",
+    "com.unity.postprocessing": "2.0.7-preview",
+    "com.unity.cinemachine": "2.2.0",
+    "com.unity.textmeshpro": "1.2.3"
+  }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
 
-public class Character : MonoBehaviour
+public abstract class Character : MonoBehaviour
 {
     [Flags]
     public enum Status
