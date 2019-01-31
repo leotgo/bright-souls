@@ -1,10 +1,18 @@
 # Bright Souls #
 
+![Banner](https://img.itch.zone/aW1nLzE4MjIwNTQucG5n/original/6QSW0Q.png)
+
 ## Description ##
 
 Bright souls is a "Dark Souls" clone with Adaptive Game Technology. This means that the game will dynamically change it's gameplay and interface based on the player style.
 
+## Video ##
+
 You can check out the latest videos in this [Youtube Playlist](https://www.youtube.com/playlist?list=PL_fpVHZcfJO22Vk3WuliZjiNrcDc4Kgb8)
+
+## Screenshots ##
+
+<img src="https://img.itch.zone/aW1hZ2UvMzY0MjQzLzE4MjIwNTEucG5n/original/4ygiO%2B.png" width="400"> <img src="https://img.itch.zone/aW1hZ2UvMzY0MjQzLzE4MjIwNTIucG5n/original/uveM3m.png" width="400">
 
 ## About the Project ##
 
@@ -23,7 +31,6 @@ This project is currently over development by Leonardo Tagliaro ([Github](https:
 
 ### Models and Animation ###
 
-* [Elven Girls Family](https://assetstore.unity.com/packages/3d/characters/humanoids/elven-girls-family-7123)
 * [Fantasy Dungeon](https://assetstore.unity.com/packages/3d/characters/fantasy-dungeon-46916)
 * [Free Shield](https://assetstore.unity.com/packages/3d/props/weapons/free-shield-89954)
 * [Longsword Animset Pro](https://assetstore.unity.com/packages/3d/animations/longsword-animset-pro-92239)
@@ -53,5 +60,9 @@ This project is currently over development by Leonardo Tagliaro ([Github](https:
 * [TextMesh PRO](https://assetstore.unity.com/packages/essentials/beta-projects/textmesh-pro-84126)
 
 ## Contact ##
-
-* Leonardo Tagliaro - [leonardotgo@gmail.com](mailto:leonardotgo@gmail.com)
+Leonardo Tagliaro - Porto Alegre, Brazil
+* Email: [leonardotgo@gmail.com](mailto:leonardotgo@gmail.com)
+* [Facebook](https://facebook.com/leonardo.tagliaro)
+* [itch.io](https://leotgo.itch.io)
+* [Github](https://github.com/leotgo)
+* [Twitter](https://twitter.com/madwaxey)
