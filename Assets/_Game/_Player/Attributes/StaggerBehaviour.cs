@@ -57,7 +57,6 @@ public class StaggerBehaviour : MonoBehaviour
     private void Start()
     {
         owner = GetComponent<Character>();
-        this.StaggerHealth = maxStaggerHealth;
 
         staggerRecover = new TimerAction(this, this.staggerRecoverDelay, () => {
             this.StaggerHealth = 100;
@@ -67,5 +66,7 @@ public class StaggerBehaviour : MonoBehaviour
         {
             owner.RemoveStatus(Character.Status.Unstoppable);
         });
+
+        this.StaggerHealth = maxStaggerHealth;
     }
 }

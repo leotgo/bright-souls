@@ -60,7 +60,7 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (type != HitboxType.Hitbox || IsActive == false)
             return;

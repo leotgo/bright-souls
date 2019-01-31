@@ -14,7 +14,14 @@ public abstract class Character : MonoBehaviour
         IFrames = 0x2,
         Unstoppable = 0x4
     }
+
+    public enum Faction
+    {
+        Player,
+        Enemy
+    }
     public Status _status = Status.None;
+    public Faction faction;
 
     public void AddStatus(Status status)
     {
@@ -45,6 +52,7 @@ public abstract class Character : MonoBehaviour
             this.Notify(Message.Combat_HealthChange, diff);
             if (_health <= 0f)
             {
+                this.Notify(Message.Combat_Death);
                 GetComponent<Animator>().SetTrigger("death");
             }
         }

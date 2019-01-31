@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Patterns.Observer;
-using Helpers.Routine;
+using Helpers.Timing;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class AICharacter : Character, IHitter, IHittable

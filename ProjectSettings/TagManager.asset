@@ -23,10 +23,10 @@ TagManager:
   - Floor
   - InvisibleWalls
   - CharacterInteractor
-  - 
-  - 
-  - 
-  - 
+  - Detail
+  - PostProcess
+  - BloomMobileEffect
+  - HealingStatue
   - 
   - 
   - 

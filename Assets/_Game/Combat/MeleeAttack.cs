@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections; 
+using System.Collections.Generic; 
+using UnityEngine; 
 using Patterns.Observer;
 
 public class MeleeAttack : Attack, IHitboxOwner, IObserver
@@ -73,14 +73,13 @@ public class MeleeAttack : Attack, IHitboxOwner, IObserver
                 break;
             case Message.Combat_DetectHit:
                 IHittable target = (IHittable)args[0];
-                if (target is Character)
-                {
-                    if ((Character)target == Source)
-                        return;
-                }
-                target.OnGetHit(this);
+                if (target is Character && ((Character)target).faction == Source.faction)
+                    ;//Debug.LogFormat("COMBAT: {0} tried to hit {1}, but both were same faction.", this.Source, target);
+                else
+                    target.OnGetHit(this);
                 break;
-
+            default:
+                break;
         }
     }
 

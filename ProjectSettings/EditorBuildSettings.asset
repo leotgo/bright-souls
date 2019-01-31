@@ -5,10 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Game/_Scenes/Menu/SCN_Menu.unity
     guid: ba27ac9d937e3f34f99c6dea8e1d7985
-  - enabled: 1
+  - enabled: 0
+    path: Assets/_Game/_Scenes/Survey1/SCN_Survey1.unity
+    guid: 9b029f0e0e1f40146a83bae53b8bd631
+  - enabled: 0
     path: Assets/_Game/_Scenes/Prison/SCN_Prison.unity
     guid: 18e68f0586e113a4b85e0adf63b6bbf5
+  - enabled: 1
+    path: Assets/_Game/_Scenes/Test/SCN_Test.unity
+    guid: 1c228648bc96f354c9602ad73845b51d
+  - enabled: 0
+    path: Assets/_Game/_Scenes/MainHalls/SCN_MainHalls.unity
+    guid: 51e0165254a1d714c9be9ed96b407ac8
   m_configObjects: {}

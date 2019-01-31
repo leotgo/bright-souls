@@ -16,7 +16,6 @@ public class AudioPlayer : MonoBehaviour, IObserver
     public List<GameObject> senders;
     public List<AudioEvent> events;
 
-    private int currAudioSource = 0;
     private AudioSource prefab;
     private ObjectPool<AudioSource> audioSources;
 
@@ -44,6 +43,8 @@ public class AudioPlayer : MonoBehaviour, IObserver
                 {
                     var source = audioSources.Fetch();
                     var sfx = sfxMap.GetSFX(evt.Effect);
+                    if(sfx == null)
+                        return;
 
                     float pitch = sfx.options.pitchVariance > 0f
                         ? Mathf.Clamp(

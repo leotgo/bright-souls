@@ -3,23 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using InControl;
+using DG.Tweening;
 
 public class UIButtonPress : MonoBehaviour
 {
 
-    public enum ButtonType
+    public enum MouseKeyboardDisplay
     {
-        Key,
-        Button
-    }
-
-    public enum CommandType
-    {
-        LightAttack,
-        HeavyAttack,
-        Dodge,
-        Block,
-        LockOn
+        Mouse,
+        Keyboard
     }
 
     private Player player;
@@ -27,17 +20,8 @@ public class UIButtonPress : MonoBehaviour
     private Color defaultColor;
     private float defaultScale;
     private Graphic[] graphicElements;
-    public ButtonType type;
-    public CommandType commandType;
-    public bool IsKey {
-        get {
-            return type == ButtonType.Key;
-        }
-    }
-    [ShowIf("IsKey")]
-    public KeyCode code;
-    [HideIf("IsKey")]
-    public string buttonName = string.Empty;
+    public PlayerActionType action;
+    public MouseKeyboardDisplay mkDisplay = MouseKeyboardDisplay.Keyboard;
     public Color pressColor = Color.yellow;
     [Range(1f, 20f)]
     public float lerpSpeed = 10f;
@@ -53,7 +37,7 @@ public class UIButtonPress : MonoBehaviour
             foreach (var g in graphicElements)
             {
                 float a = (disabled) ? disabledAlpha : 1f;
-                g.color = new Color(g.color.r, g.color.b, g.color.b, a);
+                g.DOFade(a, 0.2f);
             }
         }
     }
@@ -79,7 +63,8 @@ public class UIButtonPress : MonoBehaviour
             disabled = false;
         if (!disabled)
         {
-            bool pressed = (type == ButtonType.Key) ? Input.GetKey(code) : Input.GetButton(buttonName);
+
+            bool pressed = CheckPressed();
             Color targetColor = (pressed) ? pressColor : defaultColor;
             float targetScale = (pressed) ? 1.2f * defaultScale : defaultScale;
             img.color = Color.Lerp(img.color, targetColor, Time.deltaTime * lerpSpeed);
@@ -89,17 +74,24 @@ public class UIButtonPress : MonoBehaviour
 
     private PlayerCommandBase GetCommand()
     {
-        switch(commandType)
+        switch (action)
         {
-            case CommandType.LightAttack:
+            case PlayerActionType.Attack:
                 return player.Combat.attack;
-            case CommandType.HeavyAttack:
-                return player.Combat.attack;
-            case CommandType.Block:
+            case PlayerActionType.Dodge:
+                return player.Combat.dodge;
+            case PlayerActionType.Block:
                 return player.Combat.block;
-            case CommandType.LockOn:
-                return player.Combat.lockOn;
+            case PlayerActionType.LockOn:
+                return player.Camera.lockOn;
+            case PlayerActionType.Interact:
+                return player.Interactor.interact;
         }
         return null;
+    }
+
+    private bool CheckPressed()
+    {
+        return player.Input.IsPressingAction(action);
     }
 }

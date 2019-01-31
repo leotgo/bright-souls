@@ -5,6 +5,8 @@ using Patterns.Observer;
 
 public class LockOnDetector : MonoBehaviour {
 
+    private bool initialized = false;
+
     private Player owner;
     private List<Character> possibleTargets;
     public List<Character> PossibleTargets {
@@ -19,10 +21,14 @@ public class LockOnDetector : MonoBehaviour {
     {
         owner = GetComponentInParent<Player>();
         possibleTargets = new List<Character>();
+        initialized = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if(!initialized)
+            return;
+
         Character character = other.GetComponent<Character>();
         if (!character)
             return;

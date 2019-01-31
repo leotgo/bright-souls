@@ -2,84 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
-using Helpers.Routine;
+using Helpers.Timing;
 
 public class CombatController : MonoBehaviour, IHitter, IHittable
 {
 
     private Player player;
 
-    private Character lockOnTarget;
-    public Character LockOnTarget {
-        get {
-            return lockOnTarget;
-        }
-        set {
-            lockOnTarget = value;
-            this.Notify(Message.Combat_LockOnTarget, lockOnTarget);
-            player.lockCamera.enabled = lockOnTarget != null;
-            player.TPCamera.enabled = lockOnTarget == null;
-        }
-    }
-    [HideInInspector] public float dodgeStaminaCost = 20f;
+    public float dodgeStaminaCost = 20f;
     private float blockBreakDamageModifier = 0.2f;
-    private LockOnDetector detector;
 
     public AttackCommand attack;
     public BlockCommand block;
     public DodgeCommand dodge;
-    public LockOnCommand lockOn;
-    public LockOnChangeCommand lockOnChange;
-    private float lockOnChangeMx = 0.5f;
-    private float accumMx = 0f;
 
     private void Start()
     {
         this.player = GetComponent<Player>();
-        detector = player.GetComponentInChildren<LockOnDetector>();
 
         attack = new AttackCommand(this.player);
         block = new BlockCommand(this.player);
         dodge = new DodgeCommand(this.player);
-        lockOn = new LockOnCommand(this.player);
-        lockOnChange = new LockOnChangeCommand(this.player);
     }
 
     private void Update()
     {
-        accumMx += Input.GetAxisRaw("Mouse X") * Time.deltaTime;
-        if (Mathf.Abs(accumMx) > lockOnChangeMx && LockOnTarget != null)
-        {
-            accumMx = 0f;
-            if (lockOnChange.IsValid())
-                lockOnChange.Execute(accumMx);
-        }
-        accumMx = Mathf.Lerp(accumMx, 0f, Time.deltaTime);
-
         if (!player.IsInAnyState(States.Dodging))
             RotationUpdate();
-
-        if (LockOnTarget != null)
-            if (LockOnTarget.IsInAnyState(States.Dead))
-                LockOnTarget = null;
-
-        if (Input.GetButtonDown("Dodge"))
-            if (dodge.IsValid())
-                dodge.Execute();
-        if (Input.GetButtonDown("LightAttack"))
-            if (attack.IsValid())
-                attack.Execute(0);
-        if (Input.GetButtonDown("HeavyAttack"))
-            if (attack.IsValid())
-                attack.Execute(1);
-        if (Input.GetButtonDown("LockOn"))
-            if (lockOn.IsValid())
-                lockOn.Execute();
-
-
-
-        if(block.IsValid())
-            block.Execute(Input.GetButton("Block"));
     }
 
     public void OnGetHit(Attack attack)
@@ -90,6 +39,11 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
             float damage = (float)Random.Range(meleeAtk.minDamage, meleeAtk.maxDamage);
             if (!player.HasStatus(Character.Status.IFrames))
             {
+                var sourceDir = (attack.Source.transform.position - player.transform.position).normalized;
+                sourceDir = Quaternion.Inverse(player.transform.rotation) * sourceDir;
+                player.anim.SetFloat("damage_dir_x", sourceDir.x);
+                player.anim.SetFloat("damage_dir_y", sourceDir.z);
+                Debug.LogFormat("COMBAT: {0} got hit by {1} from {2}", player, attack.Source, sourceDir);
                 if (HasBlockedAttack(attack))
                 {
                     player.Stamina.Value -= (float)meleeAtk.blockStaminaDamage;
@@ -114,9 +68,7 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
                         player.Notify(Message.Combat_GotHit);
                     }
                 }
-
             }
-
         }
     }
 
@@ -136,9 +88,13 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
 
     private void RotationUpdate()
     {
-        Vector3 fwd = (!LockOnTarget) ? Camera.main.transform.forward : (LockOnTarget.transform.position - transform.position).normalized;
-        fwd.Set(fwd.x, 0f, fwd.z);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(fwd, Vector3.up), 15f * Time.deltaTime);
+        if(player.Camera.Mode == PlayerCamera.CameraMode.LockOn)
+        {
+            var dir = player.Camera.LockOnTarget.transform.position - player.transform.position;
+            dir = Vector3.ProjectOnPlane(dir, Vector3.up);
+            dir = dir.normalized;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir, Vector3.up), 7.5f * Time.deltaTime);
+        }
     }
 
     public class AttackCommand : PlayerCommand<int>
@@ -147,12 +103,13 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
 
         public override bool IsValid()
         {
-            return !player.IsInAnyState(States.Dodging, States.Attacking, States.ComboEnding, States.Jumping, States.Blocking, States.Stagger, States.Dead)
+            return !player.IsInAnyState(States.Dodging, States.Jumping, States.Blocking, States.Stagger, States.Dead)
                 && player.Stamina.Value > 0f;
         }
 
         public override void Execute(int attackId)
-        { 
+        {
+            player.Physics.MotionSource = PlayerPhysics.MotionSourceType.Animation;
             var weapon = player.GetComponentInChildren<Weapon>();
             weapon.OnAttack(attackId);
         }
@@ -185,95 +142,51 @@ public class CombatController : MonoBehaviour, IHitter, IHittable
 
         public override void Execute()
         {
-            Vector2 dodgeDir = GetDodgeDirection();
+            Vector3 dodgeDir = GetDodgeDirection();
+            if (dodgeDir.magnitude < 0.2f)
+            {
+                if (player.Camera.Mode == PlayerCamera.CameraMode.ThirdPerson)
+                    dodgeDir = Quaternion.Inverse(Camera.main.transform.rotation) * new Vector3(player.transform.forward.x, 0f, player.transform.forward.z).normalized;
+                else
+                    dodgeDir = Vector3.back;
+            }
             Vector3 camFwd = UnityEngine.Camera.main.transform.forward;
             camFwd = (new Vector3(camFwd.x, 0f, camFwd.z)).normalized;
-            if (dodgeDir.y < 0.1f)
+            if (player.Camera.Mode == PlayerCamera.CameraMode.ThirdPerson)
             {
-                dodgeDir.Set(dodgeDir.x * -1f, dodgeDir.y);
-                player.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * Quaternion.LookRotation(camFwd, Vector3.up);
+                var dir = dodgeDir.magnitude > 0f ? dodgeDir : Vector3.back;
+                var planifiedDir = Vector3.ProjectOnPlane(Camera.main.transform.rotation * dir, Vector3.up).normalized;
+                player.transform.rotation = Quaternion.LookRotation(planifiedDir, Vector3.up);
+                player.anim.SetFloat("dodge_x", 0f);
+                player.anim.SetFloat("dodge_y", 1f);
             }
             else
             {
-                player.transform.rotation = Quaternion.LookRotation(camFwd, Vector3.up);
-            }
+                if (dodgeDir.z < 0.1f)
+                {
+                    dodgeDir.Set(dodgeDir.x * -1f, 0f, dodgeDir.z);
+                    player.transform.rotation = Quaternion.LookRotation(-1f * camFwd, Vector3.up);
+                }
+                else
+                    player.transform.rotation = Quaternion.LookRotation(camFwd, Vector3.up);
 
-            player.anim.SetFloat("dodge_x", dodgeDir.x);
-            player.anim.SetFloat("dodge_y", dodgeDir.y);
+                player.anim.SetFloat("dodge_x", dodgeDir.x);
+                player.anim.SetFloat("dodge_y", dodgeDir.z);
+            }
+            player.Physics.MotionSource = PlayerPhysics.MotionSourceType.Animation;
             player.anim.SetTrigger("dodge");
         }
     }
 
-    public class LockOnCommand : PlayerCommand
-    {
-        public LockOnCommand(Player player) : base(player) { }
-
-        public override bool IsValid()
-        {
-            return player.Combat.detector.PossibleTargets.Count > 0;
-        }
-
-        public override void Execute()
-        {
-            if (!player.Combat.LockOnTarget)
-                player.Combat.LockOnTarget = player.Combat.GetLockOnTarget(0f);
-            else
-                player.Combat.LockOnTarget = null;
-        }
-    }
-
-    public class LockOnChangeCommand : PlayerCommand<float>
-    {
-        public LockOnChangeCommand(Player player) : base (player) { }
-
-        public override bool IsValid()
-        {
-            return player.Combat.detector.PossibleTargets.Count > 1;
-        }
-
-        public override void Execute(float dir)
-        {
-            player.Combat.LockOnTarget = player.Combat.GetLockOnTarget(dir);
-        }
-    }
-
-    private static Vector2 GetDodgeDirection()
+    private static Vector3 GetDodgeDirection()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        Vector2 dodgeDir = new Vector2(0f, 0f);
-        dodgeDir.Set(horizontal, vertical);
+        Vector3 dodgeDir = new Vector3(0f, 0f, 0f);
+        dodgeDir.Set(horizontal, 0f, vertical);
 
-        dodgeDir = dodgeDir.magnitude > 0.2f ? dodgeDir.normalized : Vector2.zero;
+        dodgeDir = dodgeDir.magnitude > 0.2f ? dodgeDir.normalized : dodgeDir;
         return dodgeDir;
     }
-
-    public Character GetLockOnTarget(float dir)
-    {
-        Character closestInDir = LockOnTarget;
-        float diffToCenter = 1.0f;
-        detector.RefreshTargets();
-        foreach (var target in detector.PossibleTargets)
-        {
-            if (target != LockOnTarget)
-            {
-                var viewPos = Camera.main.WorldToViewportPoint(target.transform.position);
-                float diff = Mathf.Abs(viewPos.x - 0.5f);
-                if (diff < diffToCenter)
-                {
-                    bool possibleTarget = false;
-                    if ((dir == 0f) ||
-                        (dir > 0f && viewPos.x > 0.5f) ||
-                        (dir < 0f && viewPos.x < 0.5f))
-                        possibleTarget = true;
-                    closestInDir = possibleTarget ? target : closestInDir;
-                    diffToCenter = possibleTarget ? diff : diffToCenter;
-                }
-            }
-
-        }
-        return closestInDir;
-    }
-
 }

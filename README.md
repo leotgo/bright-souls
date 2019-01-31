@@ -1,32 +1,29 @@
 # Bright Souls #
 
+## Description ##
+
 Bright souls is a "Dark Souls" clone with Adaptive Game Technology. This means that the game will dynamically change it's gameplay and interface based on the player style.
 
 You can check out the latest videos in this [Youtube Playlist](https://www.youtube.com/playlist?list=PL_fpVHZcfJO22Vk3WuliZjiNrcDc4Kgb8)
 
-This repository contains only the source code of the project.
+## About the Project ##
 
-Project is currently under development. Latest released version is Alpha 0.1.
+Unfortunately, due to the Unity Asset Store Terms of Agreement, redistribution of assets is strictly prohibited. Therefore, this repository contains only the source code of the project.
 
-## Features: ##
+**This project can NOT be classified as Free or Open Software, since compilation and execution is impossible without the assets. However you are free to view, copy and modify the source code.**
 
-* Gameplay inspired in Dark Souls;
-* Simple State-Machine Enemy AI;
-* Static and Dynamic Player Modelling; 
-* Selective Gameplay Features;
-* Dynamic Difficulty Adjustment.
+This project is currently over development by Leonardo Tagliaro ([Github](https://github.com/leotgo), [itch.io](https://leotgo.itch.io)), and is part of his dissertation for the degree of Bachelor in Computer Science.
 
 ## Assets Used In This Project ##
 
 ### Editor Utilities ###
 
-* [Hierarchy PRO +Presets And Selections](https://assetstore.unity.com/packages/tools/utilities/hierarchy-pro-presets-and-selections-89542)
-* [Instant Screenshot](https://assetstore.unity.com/packages/tools/instant-screenshot-24122)
 * [Odin - Inspector and Serializer](https://assetstore.unity.com/packages/tools/utilities/odin-inspector-and-serializer-89041)
 * [Probuilder](https://assetstore.unity.com/packages/tools/modeling/probuilder-111418)
 
 ### Models and Animation ###
 
+* [Elven Girls Family](https://assetstore.unity.com/packages/3d/characters/humanoids/elven-girls-family-7123)
 * [Fantasy Dungeon](https://assetstore.unity.com/packages/3d/characters/fantasy-dungeon-46916)
 * [Free Shield](https://assetstore.unity.com/packages/3d/props/weapons/free-shield-89954)
 * [Longsword Animset Pro](https://assetstore.unity.com/packages/3d/animations/longsword-animset-pro-92239)
@@ -44,12 +41,14 @@ Project is currently under development. Latest released version is Alpha 0.1.
 
 ### Visual Effects and Particles ###
 
-* [Living Particles](https://assetstore.unity.com/packages/vfx/particles/spells/living-particles-105817)
 * [Pseudo-Volume Blood Effects](https://assetstore.unity.com/packages/vfx/particles/pseudo-volume-blood-effects-36196)
 * [Smoke & Ember FX](https://assetstore.unity.com/packages/vfx/particles/fire-explosions/smoke-ember-fx-98947)
+* [Unity Particle Pack](https://assetstore.unity.com/packages/essentials/tutorial-projects/unity-particle-pack-127325)
 
 ### User Interface ###
 
+* [Activity Indicators](https://assetstore.unity.com/packages/3d/animations/activity-indicator-progress-circle-23677)
+* [PC & Consoles Controller Buttons Icons Pack](https://assetstore.unity.com/packages/2d/gui/icons/pc-consoles-controller-buttons-icons-pack-85215)
 * [RPG & MMO UI 5](https://assetstore.unity.com/packages/2d/gui/rpg-mmo-ui-5-95223)
 * [TextMesh PRO](https://assetstore.unity.com/packages/essentials/beta-projects/textmesh-pro-84126)
 

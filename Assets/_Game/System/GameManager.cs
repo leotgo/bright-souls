@@ -71,15 +71,6 @@ public class GameManager : MonoBehaviour, IObserver {
         }
     }
 
-    public void OnLevelWasLoaded(int level)
-    {
-        if(singleton == this)
-        {
-            MessageSystem.Init();
-            SubscribeToMessages();
-        }
-    }
-
     public void NewGame()
     {
         LoadManager.StartNewGame();

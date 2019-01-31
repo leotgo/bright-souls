@@ -10,4 +10,7 @@ public enum AttackName {
 	Longsword_Light = 200,
     Longsword_Heavy,
     Longsword_Special,
+    Knife_Slash = 300,
+    Knife_JumpAttack,
+    Knife_Combo
 }

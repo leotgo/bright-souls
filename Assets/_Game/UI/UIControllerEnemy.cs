@@ -39,7 +39,7 @@ public class UIControllerEnemy : MonoBehaviour, IObserver
         }
         if (msg == Message.Combat_LockOnTarget)
         {
-            var target = (Character)args[0];
+            var target = args[0] as Character;
             if (target == owner)
             {
                 UIElementCanvas.enabled = true;
