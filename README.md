@@ -65,4 +65,4 @@ Leonardo Tagliaro - Porto Alegre, Brazil
 * [Facebook](https://facebook.com/leonardo.tagliaro)
 * [itch.io](https://leotgo.itch.io)
 * [Github](https://github.com/leotgo)
-* [Twitter](https://twitter.com/madwaxey)
+* [Twitter](https://twitter.com/leotgo)
