@@ -1,0 +1,34 @@
+@startuml Camera Details
+namespace Camera {
+    class PlayerCameraDirector <<MonoBehaviour>> {
+        +<<get>> CurrentCamera : PlayerCameraBase
+        -cameras : PlayerCameraBase[]
+        +AddCamera()
+        +GetCamera()
+        -BringCameraToFront()
+    }
+
+    abstract PlayerCameraBase <<MonoBehaviour>> {
+        +<<get>> CinemachineCamera : CinemachineVirtualCameraBase
+        +<<get>> IsLockOnCamera : bool
+        +<<get>> IsThirdPersonCamera : bool
+        +SetPriority()
+    }
+
+    class LockOnCamera implements PlayerCameraBase {
+        +<<get>> ChangeTarget : Command
+        +<<get>> LockOnTarget : Transform
+    }
+
+    class ThirdPersonCamera implements PlayerCameraBase {
+        +<<get>> Look : Command
+        -freeLookCamera : CinemachineFreeLook
+        -SetInputAxisValue(input : Vector2)
+        -SetMaxSpeed(speed : Vector2)
+    }
+
+    PlayerCameraDirector "1" o-- "1..*" PlayerCameraBase
+}
+
+hide empty members
+@enduml

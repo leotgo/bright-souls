@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e32d0770d5dc39409c285c577893589, type: 3}
+  m_Name: SM_Player_Combat
+  m_EditorClassIdentifier: 
+  mappings:
+  - effect: 102
+    clip: {fileID: 8300000, guid: 1e8c1df0ec8fadb4db60c99bb5ca1cfb, type: 3}
+    options:
+      priority: 128
+      volume: 0.8
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 103
+    clip: {fileID: 8300000, guid: ae055728c3a940e4c96b8f6de3413161, type: 3}
+    options:
+      priority: 128
+      volume: 0.8
+      pitch: 1
+      pitchVariance: 0.1
+      stereoPan: 0
+      delay: 0.15
+  - effect: 153
+    clip: {fileID: 8300000, guid: e326c70131d3743f682e92213908e683, type: 3}
+    options:
+      priority: 128
+      volume: 0.9
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 154
+    clip: {fileID: 8300000, guid: 67046ce8c700f4d70b9608ab6fe5d98f, type: 3}
+    options:
+      priority: 128
+      volume: 0.9
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 175
+    clip: {fileID: 8300000, guid: 7e93d08daeea44ad08d8cd3b0f22fa76, type: 3}
+    options:
+      priority: 128
+      volume: 0.75
+      pitch: 1
+      pitchVariance: 0.1
+      stereoPan: 0
+      delay: 0
+  - effect: 176
+    clip: {fileID: 8300000, guid: 42d6f5f4248ca4e7d8434083435aea2d, type: 3}
+    options:
+      priority: 128
+      volume: 0.75
+      pitch: 1
+      pitchVariance: 0.1
+      stereoPan: 0
+      delay: 0
+  - effect: 106
+    clip: {fileID: 8300000, guid: b242cad6e47cbee4e90cdc6675c8bca8, type: 3}
+    options:
+      priority: 128
+      volume: 0.9
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 177
+    clip: {fileID: 8300000, guid: 0c72fc8770d5e3c4e936b5e036f5d4c7, type: 3}
+    options:
+      priority: 128
+      volume: 1
+      pitch: 0.85
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 178
+    clip: {fileID: 0}
+    options:
+      priority: 128
+      volume: 1
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 205
+    clip: {fileID: 8300000, guid: 8a072739919123d45bb9eb22d7782ef5, type: 3}
+    options:
+      priority: 128
+      volume: 0.7
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0

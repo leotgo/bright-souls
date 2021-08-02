@@ -1,0 +1,59 @@
+@startuml Attributes
+title Attributes System Overview
+
+interface IActor 
+IActor "1" o-- "0..*" AttributesContainer
+
+abstract Character implements IActor
+Character o-- CharacterBehaviourAttributes
+
+class Player implements Character
+Player o-- PlayerCombatAttributes
+
+interface IActorAttribute
+abstract ActorAttribute<T : ValueType> extends IActorAttribute  {
+    +<<get/set>>Value : T
+    +onAttributeChanged : event
+}
+
+class HealthAttribute<float> implements ActorAttribute 
+class StaminaAttribute<float> implements ActorAttribute 
+class PoiseAttribute<float> implements ActorAttribute
+
+enum CharacterFaction {
+    Player
+    Ghouls
+    Skeletons
+    Knights
+}
+class FactionAttribute<CharacterFaction> implements ActorAttribute
+FactionAttribute o-- CharacterFaction
+
+enum CharacterStatus {
+    None
+    Staggered
+    IFrames
+    Unstoppable
+}
+class StatusAttribute<CharacterStatus> implements ActorAttribute
+StatusAttribute o-- CharacterStatus
+
+abstract AttributesContainer
+{
+    +GetAttributes() : IActorAttribute[]
+    +GetAttribute<T>() : T is IActorAttribute
+}
+AttributesContainer "1" o-- "1..*" IActorAttribute
+
+class PlayerCombatAttributes implements AttributesContainer
+PlayerCombatAttributes o-- HealthAttribute
+PlayerCombatAttributes o-- StaminaAttribute
+PlayerCombatAttributes o-- PoiseAttribute
+
+class CharacterBehaviourAttributes implements AttributesContainer 
+CharacterBehaviourAttributes o-- FactionAttribute
+CharacterBehaviourAttributes o-- StatusAttribute
+
+scale 1.3
+hide empty members
+@enduml

@@ -1,0 +1,75 @@
+@startuml Player Overview
+title Bright Souls - Player Components Overview
+
+class Player <<MonoBehaviour>> {
+    +<<get>> Motor : PlayerMotor
+    +<<get>> Input : InputHandler
+    +<<get>> Interactor : PlayerInteractor
+    +<<get>> Combat : PlayerCombatController
+    +<<get>> Director : PlayerCameraDirector
+}
+
+note "Details are hidden in\nseveral namespaces.\nCheck additional\ndiagrams for specific\ninformation." as N1
+
+!include Camera_Details.puml
+namespace Camera {
+    .Player *-- PlayerCameraDirector
+    hide members
+}
+
+!includesub Combat_Details.puml!PLAYER
+namespace Combat.Player {
+    .Player *-- PlayerCombatController
+    hide members
+}
+namespace Combat.Attributes {
+    remove ActorAttribute
+    hide members
+}
+
+namespace Movement {
+    class PlayerMotor <<MonoBehaviour>>
+    .Player *-- PlayerMotor
+}
+
+namespace Interaction {
+    class PlayerInteractor<<MonoBehaviour>>
+
+    .Player *-- PlayerInteractor
+}
+
+namespace Animation {
+    class PlayerAnimator <<MonoBehaviour>>
+
+    .Player *-r- PlayerAnimator
+}
+
+namespace Audio {
+    class PlayerAudioEventHandler<<MonoBehaviour>>
+    .Player *-- PlayerAudioEventHandler
+}
+
+namespace VFX {
+    class PlayerVFXHandler<<MonoBehaviour>>
+    .Player *-- PlayerVFXHandler
+}
+
+package "FMOD Plugin" <<Node>> {
+    component FMOD {
+    }
+    Audio.PlayerAudioEventHandler -- FMOD
+}
+
+package UnityEngine <<Node>> {
+    component InputHandler {
+    }
+    component Animator {
+    }
+    Animation.PlayerAnimator o-- Animator
+    .Player o-- InputHandler
+}
+
+hide GameData.Player
+hide empty members
+scale 2
+@enduml

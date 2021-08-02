@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e32d0770d5dc39409c285c577893589, type: 3}
+  m_Name: SM_ArmouredKnight
+  m_EditorClassIdentifier: 
+  mappings:
+  - effect: 200
+    clip: {fileID: 8300000, guid: 492636540c28e46499792ab368b39075, type: 3}
+    options:
+      priority: 128
+      volume: 0.5
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
+  - effect: 150
+    clip: {fileID: 8300000, guid: 9c3de241d8b20db4d8e544e63fc437e8, type: 3}
+    options:
+      priority: 128
+      volume: 1
+      pitch: 1
+      pitchVariance: 0
+      stereoPan: 0
+      delay: 0
