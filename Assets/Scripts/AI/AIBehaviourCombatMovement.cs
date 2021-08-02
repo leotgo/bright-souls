@@ -39,7 +39,7 @@ namespace BrightSouls.AI
 
             owner.SetMovementControl(AICharacter.AIMovementControlType.Animator);
             owner.Movement = Vector2.zero;
-            owner.CurrentMoveSpeed = owner.walkMoveSpeed;
+            owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
         }
 
         public override void BehaviourUpdate()
@@ -79,13 +79,13 @@ namespace BrightSouls.AI
                 if (dist > maxTargetDistance)
                 {
                     isAdjustingDistance = true;
-                    owner.CurrentMoveSpeed = owner.walkMoveSpeed;
+                    owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
                     owner.Movement = new Vector2(owner.Movement.x, 0.5f);
                 }
                 else if (dist < minTargetDistance)
                 {
                     isAdjustingDistance = true;
-                    owner.CurrentMoveSpeed = owner.walkMoveSpeed;
+                    owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
                     owner.Movement = new Vector2(owner.Movement.x, -0.5f);
                 }
             }

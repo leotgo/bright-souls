@@ -5,10 +5,8 @@ using Patterns.Observer;
 
 namespace BrightSouls.AI
 {
-
     public class AIBehaviourPatrolling : AIBehaviour
     {
-
         public float reachDistance = 2f;
         public Waypoint[] wayPoints;
 
@@ -26,38 +24,48 @@ namespace BrightSouls.AI
 
             owner.SetMovementControl(AICharacter.AIMovementControlType.NavAgent);
 
-            lastStoppingDistance = owner.navAgent.stoppingDistance;
-            lastSpeed = owner.navAgent.speed;
+            lastStoppingDistance = owner.NavAgent.stoppingDistance;
+            lastSpeed = owner.NavAgent.speed;
 
-            owner.navAgent.stoppingDistance = reachDistance;
-            owner.CurrentMoveSpeed = owner.walkMoveSpeed;
-            owner.navAgent.SetDestination(wayPoints[GetNextWayPointId()].transform.position);
+            owner.NavAgent.stoppingDistance = reachDistance;
+            owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
+            owner.NavAgent.SetDestination(wayPoints[GetNextWayPointId()].transform.position);
         }
 
         public override void BehaviourUpdate()
         {
-            if (owner.navAgent.remainingDistance < reachDistance)
+            if (owner.NavAgent.remainingDistance < reachDistance)
             {
                 owner.Notify(Message.AI_ReachedWaypoint);
-                owner.navAgent.stoppingDistance = lastStoppingDistance;
+                owner.NavAgent.stoppingDistance = lastStoppingDistance;
                 owner.CurrentMoveSpeed = lastSpeed;
             }
         }
 
         public override void BehaviourEnd()
         {
-            owner.navAgent.stoppingDistance = lastStoppingDistance;
+            owner.NavAgent.stoppingDistance = lastStoppingDistance;
             owner.CurrentMoveSpeed = lastSpeed;
         }
 
         private int GetNextWayPointId()
         {
             if (wayPoints.Length == 0)
+            {
                 return 0;
+            }
             else
-                currentWaypoint = (currentWaypoint < wayPoints.Length) ? currentWaypoint + 1 : 1;
+            {
+                if(currentWaypoint < wayPoints.Length)
+                {
+                    currentWaypoint++;
+                }
+                else
+                {
+                    currentWaypoint = 1;
+                }
+            }
             return currentWaypoint - 1;
         }
-
     }
 }

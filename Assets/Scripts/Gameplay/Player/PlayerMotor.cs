@@ -14,18 +14,13 @@ namespace BrightSouls
             Motor,
             Animation
         }
-        public MotionSourceType MotionSource;
 
-        [SerializeField] private Player player;
-        public MoveCommand Move { get; private set; }
+        public MoveCommand Move
+        {
+            get;
+            private set;
+        }
 
-        private CharacterController charController;
-        [SerializeField] private LayerMask groundLayers;
-
-        private Vector3 gravity = new Vector3(0f, -9.81f, 0f);
-        private float gravityMult = 1f;
-
-        private Vector3 movement = Vector3.zero;
         private Vector3 Movement
         {
             get
@@ -39,9 +34,21 @@ namespace BrightSouls
             }
         }
 
+        // Inspector-assigned values
+        [Header("Component Refs")]
+        [SerializeField] private Player player;
+        [SerializeField] private CharacterController charController;
+        [Header("Physics Data")]
+        [SerializeField] private LayerMask groundLayers;
+
+        // Runtime
+        public MotionSourceType MotionSource;
+        private Vector3 gravity = new Vector3(0f, -9.81f, 0f);
+        private float gravityMult = 1f;
+        private Vector3 movement = Vector3.zero;
+
         private void Start()
         {
-            InitializeComponentReferences();
             InitializeCommands();
             InitializeInput();
         }
@@ -51,14 +58,11 @@ namespace BrightSouls
             GravityUpdate();
 
             if (player.IsInAnyState(States.Dead))
+            {
                 return;
+            }
 
             charController.Move(Movement * Time.deltaTime);
-        }
-
-        private void InitializeComponentReferences()
-        {
-            charController = GetComponentInChildren<CharacterController>();
         }
 
         private void InitializeCommands()
@@ -105,7 +109,9 @@ namespace BrightSouls
             else if (Movement.y < 0f)
             {
                 if (Mathf.Abs(Movement.y) > 15f)
+                {
                     player.Stamina.Value -= Mathf.CeilToInt(Mathf.Abs(Movement.y) * 3f);
+                }
                 Movement = new Vector3(Movement.x, 0f, Movement.z);
                 charController.Move(new Vector3(0f, -0.5f, 0f));
             }

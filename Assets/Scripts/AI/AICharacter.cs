@@ -17,68 +17,74 @@ namespace BrightSouls.AI
             Animator
         }
 
-        public override AttributesContainer Attributes { get => attributes; }
-        private AttributesContainer attributes = new AttributesContainer();
+        public NavMeshAgent NavAgent
+        {
+            get => navAgent;
+        }
 
-        public delegate void OnStartAttackHandler();
-        public event OnStartAttackHandler onStartAttack;
-
-        [HideInInspector] public NavMeshAgent navAgent;
-        [HideInInspector] public Animator animator;
-        public int nextAttack = 0;
-        public float walkMoveSpeed = 2f;
-        public float runMoveSpeed = 4f;
-
-        private Character _target = null;
-        private AIMovementControlType _movementType = AIMovementControlType.NavAgent;
-        private float _currentMoveSpeed = 4f;
+        public Animator AIAnimator
+        {
+            get => animator;
+        }
 
         public float CurrentMoveSpeed
         {
-            get
-            {
-                return _currentMoveSpeed;
-            }
-            set
-            {
-                _currentMoveSpeed = value;
-            }
+            get => _currentMoveSpeed;
+            set => _currentMoveSpeed = value;
         }
 
-        private Vector2 _movement;
+        public float RunMoveSpeed
+        {
+            get => runMoveSpeed;
+        }
+
+        public float WalkMoveSpeed
+        {
+            get => walkMoveSpeed;
+        }
+
         public Vector2 Movement
         {
-            // Movement Direction ([0,1], [0,1]) of AICharacter
-            // Does not consider rotation
-            get
-            {
-                return _movement;
-            }
-            set
-            {
-                _movement = value;
-            }
+
+            get => _movement;
+            set => _movement = value;
         }
 
         public Character Target
         {
-            get
-            {
-                return _target;
-            }
-            set
-            {
-                _target = value;
-            }
+            get => _target;
+            set => _target = value;
         }
 
         public bool HasTarget
         {
-            get
-            {
-                return Target != null;
-            }
+            get => Target != null;
         }
+
+        public override AttributesContainer Attributes
+        {
+            get => attributes;
+        }
+
+        // Events
+        public delegate void OnStartAttackHandler();
+        public event OnStartAttackHandler onStartAttack;
+
+        // Component Refs
+        [SerializeField] private NavMeshAgent navAgent;
+        [SerializeField] private Animator animator;
+
+        // Inspector-assigned values
+        [SerializeField] private float walkMoveSpeed = 2f;
+        [SerializeField] private float runMoveSpeed = 4f;
+
+        // Runtime
+        public int nextAttack = 0;
+        private AttributesContainer attributes = new AttributesContainer();
+        private Character _target = null;
+        private AIMovementControlType _movementType = AIMovementControlType.NavAgent;
+        private float _currentMoveSpeed = 4f;
+        private Vector2 _movement; // World-Space Movement Direction (X,Z) of AICharacter
 
         public float GetDistanceToTarget()
         {
@@ -117,9 +123,6 @@ namespace BrightSouls.AI
             }
         }
 
-
-        // Public methods ============================================ //
-
         public void OnGetHit(Attack attack)
         {
             if (IsInAnyState(States.Dead))
@@ -143,14 +146,22 @@ namespace BrightSouls.AI
             this._movementType = moveType;
 
             if (_movementType == AIMovementControlType.NavAgent)
+            {
                 navAgent.isStopped = false;
+            }
             else
+            {
                 navAgent.isStopped = true;
+            }
 
             if (_movementType == AIMovementControlType.Animator)
+            {
                 animator.applyRootMotion = true;
+            }
             else
+            {
                 animator.applyRootMotion = false;
+            }
         }
 
         public void Attack(int attackId)
@@ -169,20 +180,10 @@ namespace BrightSouls.AI
             animator.ResetTrigger("attack_dash");
         }
 
-        private void Start()
-        {
-            navAgent = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
-        }
-
         private void Update()
         {
             UpdateMove();
-
-            animator.SetFloat("move_x", Mathf.Lerp(animator.GetFloat("move_x"),
-                Movement.x, navAgent.acceleration * Time.deltaTime));
-            animator.SetFloat("move_y", Mathf.Lerp(animator.GetFloat("move_y"),
-                Movement.y, navAgent.acceleration * Time.deltaTime));
+            UpdateAcceleration();
         }
 
         private void UpdateMove()
@@ -190,21 +191,30 @@ namespace BrightSouls.AI
             navAgent.speed = Mathf.Lerp(navAgent.speed, CurrentMoveSpeed, navAgent.acceleration * Time.deltaTime);
             if (_movementType == AIMovementControlType.NavAgent)
             {
-                Movement =
-                    new Vector2(
+                var normalizedNavAgentMovement = new Vector2(
                         Vector3.Dot(navAgent.velocity.normalized, transform.right),
                         Vector3.Dot(navAgent.velocity.normalized, transform.forward)
                         ).normalized;
+                Movement = normalizedNavAgentMovement;
                 Movement *= (navAgent.velocity.magnitude / runMoveSpeed);
             }
             else if (_movementType == AIMovementControlType.Behavior)
             {
-                var moveVec =
-                    transform.rotation
-                    * new Vector3(Movement.x, 0f, Movement.y).normalized
-                    * navAgent.speed;
+                var normalizedMovement = new Vector3(Movement.x, 0f, Movement.y).normalized;
+                var moveVec = transform.rotation * normalizedMovement * navAgent.speed;
                 navAgent.Move(moveVec * Time.deltaTime);
             }
+        }
+
+        private void UpdateAcceleration()
+        {
+            var x = animator.GetFloat("move_x");
+            x = Mathf.Lerp(x, Movement.x, navAgent.acceleration * Time.deltaTime);
+            animator.SetFloat("move_x", x);
+
+            var y = animator.GetFloat("move_y");
+            y = Mathf.Lerp(y, Movement.y, navAgent.acceleration * Time.deltaTime);
+            animator.SetFloat("move_y", y);
         }
     }
 }

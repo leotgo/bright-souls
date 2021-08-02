@@ -25,14 +25,18 @@ namespace BrightSouls
         public T GetAttribute<T>() where T : ICharacterAttribute
         {
             if(!initialized)
+            {
                 Initialize();
+            }
 
             bool hasAttribute = attributeMap.TryGetValue(typeof(T), out var attribute);
             if(hasAttribute)
+            {
                 return (T)attribute;
+            }
             else
             {
-                Debug.LogErrorFormat("Error: Attribute of type {0} not found in {1}. Returning default value for type {0}.", typeof(T), this);
+                Debug.LogError($"Error: Attribute of type {typeof(T)} not found in {this}. Returning default value for type {0}.");
                 return default(T);
             }
         }

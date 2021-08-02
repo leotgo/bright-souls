@@ -6,26 +6,24 @@ namespace BrightSouls
 {
     public class AnimToCharacterState : StateMachineBehaviour
     {
-
-        private Character animatorOwner = null;
-
-        public States targetState = States.Default;
-        public StateMachineType stateMachine = StateMachineType.Generic;
-
-        public Condition condition = Condition.StateEnter;
-        private bool IsNotTransitionCondition
-        {
-            get { return condition != Condition.TransitionTo; }
-        }
-
-        public string nextState = string.Empty;
-
         public enum Condition
         {
             StateEnter,
             StateExit,
             TransitionTo
         }
+
+        private bool IsNotTransitionCondition
+        {
+            get { return condition != Condition.TransitionTo; }
+        }
+
+        private Character animatorOwner = null;
+
+        public States targetState = States.Default;
+        public StateMachineType stateMachine = StateMachineType.Generic;
+        public Condition condition = Condition.StateEnter;
+        public string nextState = string.Empty;
 
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -53,9 +51,13 @@ namespace BrightSouls
         private void UpdateState(Animator animator)
         {
             if (animatorOwner == null)
+            {
                 animatorOwner = animator.GetComponent<Character>();
-            if (animatorOwner != null)
+            }
+            else
+            {
                 animatorOwner.SetState(stateMachine, targetState);
+            }
         }
     }
 }

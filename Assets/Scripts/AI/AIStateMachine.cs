@@ -47,22 +47,36 @@ namespace BrightSouls.AI
 
         public void OnNotification(object sender, Message msg , params object[] args)
         {
-            var isSenderOwner = (UnityEngine.Object)sender == owner || (UnityEngine.Object)sender == owner.animator;
+            var isSenderOwner = (UnityEngine.Object)sender == owner || (UnityEngine.Object)sender == owner.AIAnimator;
             if(!isSenderOwner)
+            {
                 return;
+            }
 
             if(CurrentState == States.Patrolling && msg == Message.AI_ReachedWaypoint)
+            {
                 SetState(States.Default);
-            if(CurrentState == States.Attacking && msg == Message.Combat_AttackEnd)
+            }
+            else if(CurrentState == States.Attacking && msg == Message.Combat_AttackEnd)
+            {
                 SetState(States.CombatMovement);
-            if (CurrentState == States.Sprinting && msg == Message.Combat_AttackEnd)
+            }
+            else if (CurrentState == States.Sprinting && msg == Message.Combat_AttackEnd)
+            {
                 SetState(States.CombatMovement);
-            if(CurrentState == States.Stagger && msg == Message.Combat_StaggerEnd)
+            }
+            else if(CurrentState == States.Stagger && msg == Message.Combat_StaggerEnd)
+            {
                 SetState(States.CombatMovement);
-            if(msg == Message.Combat_Stagger)
+            }
+            else if(msg == Message.Combat_Stagger)
+            {
                 SetState(States.Stagger);
-            if(msg == Message.Combat_Death)
+            }
+            else if(msg == Message.Combat_Death)
+            {
                 SetState(States.Dead);
+            }
         }
     }
 }
