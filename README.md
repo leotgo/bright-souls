@@ -1,16 +1,25 @@
-# Bright Souls #
+![Bright Souls](https://img.itch.zone/aW1nLzE4MjIwNTQucG5n/original/6QSW0Q.png)
 
-Bright souls is a "Dark Souls" clone with Adaptive Game Technology. This means that the game will dynamically change its gameplay and interface based on the player style.
-
-You can check out the latest videos in this [Youtube Playlist](https://www.youtube.com/playlist?list=PL_fpVHZcfJO22Vk3WuliZjiNrcDc4Kgb8)
-
-## About the Assets in this Project ##
-
-Due to Unity Asset Store TOS, redistribution of assets is prohibited. Therefore, this repository contains only the source code of the project.
+Bright souls is a "Dark Souls" clone with Adaptive Game Technologies, such as Dynamic Difficulty Adjustment and dynamic modelling of player profiles. The game will dynamically adapt its enemies and other entities based on the player style.
 
 This project is not classified as Free or Open Source Software, since compilation and execution is impossible without the required assets. However you are free to view, copy and modify the source code.
 
+## Project information ##
+
+|                       |                                                                            |
+| --------------------- | -------------------------------------------------------------------------- |
+| Youtube playlist      | <https://www.youtube.com/playlist?list=PL_fpVHZcfJO22Vk3WuliZjiNrcDc4Kgb8> |
+| itch.io page          | <https://leotgo.itch.io/bright-souls>                                      |
+| Unity Version         | 2021.1.6f1                                                                 |
+
+## Screenshots ##
+
+![Screenshot_01](https://img.itch.zone/aW1hZ2UvMzY0MjQzLzE4MjIwNTIucG5n/original/uveM3m.png)
+![Screenshot_02](https://img.itch.zone/aW1hZ2UvMzY0MjQzLzE4MjIwNTEucG5n/original/4ygiO%2B.png)
+
 ## List of Third-Party Assets ##
+
+Due to Unity Asset Store TOS, redistribution of assets is prohibited. Therefore, this repository contains only the source code of the project.
 
 | Category           | Asset name                                                                                                                                  | Path in Project                                                         |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
