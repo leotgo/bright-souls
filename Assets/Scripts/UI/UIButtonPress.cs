@@ -54,8 +54,8 @@ namespace BrightSouls.UI
             PlayerCommandBase cmd = GetCommand();
             if (cmd != null)
             {
-                if (disabled == cmd.IsValid())
-                    Disabled = !cmd.IsValid();
+                if (disabled == cmd.CanExecute())
+                    Disabled = !cmd.CanExecute();
             }
             else
                 disabled = false;

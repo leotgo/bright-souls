@@ -15,9 +15,9 @@ namespace BrightSouls
         private void Initialize()
         {
             attributeMap = new Dictionary<System.Type, ICharacterAttribute>();
-            foreach(var a in serializedAttributes)
+            foreach(var attribute in serializedAttributes)
             {
-                attributeMap.Add(a.GetType(), a);
+                attributeMap.Add(attribute.GetType(), attribute);
             }
             initialized = true;
         }
@@ -36,7 +36,7 @@ namespace BrightSouls
             }
             else
             {
-                Debug.LogError($"Error: Attribute of type {typeof(T)} not found in {this}. Returning default value for type {0}.");
+                Debug.LogError($"Error: Attribute of type {typeof(T)} not found in {this}. Returning default value for type {typeof(T)}.");
                 return default(T);
             }
         }

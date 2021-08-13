@@ -28,7 +28,7 @@ namespace BrightSouls
                 States.Dead
             };
 
-            public override bool IsValid()
+            public override bool CanExecute()
             {
                 bool playerHasStamina = player.Stamina.Value > 0f;
                 bool playerIsAbleToAttack = !player.IsInAnyState(commandBlockerStates);
@@ -62,7 +62,7 @@ namespace BrightSouls
                 States.Dead
             };
 
-            public override bool IsValid()
+            public override bool CanExecute()
             {
                 bool playerIsAbleToDefend = !player.IsInAnyState(commandBlockerStates);
                 return playerIsAbleToDefend;
@@ -94,7 +94,7 @@ namespace BrightSouls
                 States.Dead
             };
 
-            public override bool IsValid()
+            public override bool CanExecute()
             {
                 bool playerHasStamina = player.Stamina.Value > 0f;
                 bool playerIsAbleToDodge = !player.IsInAnyState(commandBlockerStates);

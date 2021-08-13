@@ -57,7 +57,7 @@ namespace BrightSouls
                 m_thirdPersonCamera = player.CameraDirector.GetCamera<ThirdPersonCamera> ();
             }
 
-            public override bool IsValid ()
+            public override bool CanExecute ()
             {
                 return true;
             }

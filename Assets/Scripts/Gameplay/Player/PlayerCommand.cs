@@ -13,7 +13,7 @@ namespace BrightSouls
             this.player = owner;
         }
 
-        public abstract bool IsValid();
+        public abstract bool CanExecute();
     }
 
     public abstract class PlayerCommand : PlayerCommandBase

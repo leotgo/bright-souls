@@ -49,7 +49,7 @@ namespace BrightSouls
         {
             public LockOnCommand (Player player) : base (player) { }
 
-            public override bool IsValid ()
+            public override bool CanExecute ()
             {
                 return true; //player.camera.m_lockOnDetector.PossibleTargets.Count > 0 || player.camera.LockOnTarget != null;
             }
@@ -67,7 +67,7 @@ namespace BrightSouls
         {
             public ChangeTargetCommand (Player player) : base (player) { }
 
-            public override bool IsValid ()
+            public override bool CanExecute ()
             {
                 return true; //player.camera.lockon.PossibleTargets.Count > 1;
             }

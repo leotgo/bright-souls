@@ -21,16 +21,17 @@ namespace BrightSouls
             private set;
         }
 
-        private Vector3 Movement
+        // Speed is currently only used for vertical movement (caused by gravity)
+        private Vector3 Speed
         {
             get
             {
-                return movement;
+                return speed;
             }
             set
             {
-                movement = value;
-                player.Anim.SetFloat("speed_y", movement.y);
+                speed = value;
+                player.Anim.SetFloat("speed_y", speed.y);
             }
         }
 
@@ -40,12 +41,12 @@ namespace BrightSouls
         [SerializeField] private CharacterController charController;
         [Header("Physics Data")]
         [SerializeField] private LayerMask groundLayers;
+        [SerializeField] private Vector3 gravity = new Vector3(0f, -9.81f, 0f);
 
         // Runtime
         public MotionSourceType MotionSource;
-        private Vector3 gravity = new Vector3(0f, -9.81f, 0f);
-        private float gravityMult = 1f;
-        private Vector3 movement = Vector3.zero;
+        private bool grounded = false;
+        private Vector3 speed = Vector3.zero;
 
         private void Start()
         {
@@ -62,7 +63,7 @@ namespace BrightSouls
                 return;
             }
 
-            charController.Move(Movement * Time.deltaTime);
+            charController.Move(Speed * Time.deltaTime);
         }
 
         private void InitializeCommands()
@@ -73,7 +74,6 @@ namespace BrightSouls
         private void InitializeInput()
         {
             var move = player.Input.currentActionMap.FindAction("Move");
-
             move.performed += ctx => Move.Execute(move.ReadValue<Vector2>());
         }
 
@@ -88,32 +88,59 @@ namespace BrightSouls
 
             player.Anim.SetFloat("move_speed", move.magnitude);
 
-            float mult = player.IsInAnyState(States.Blocking) ? 0.5f : 1f;
+            float blockingSpeedMultiplier = player.IsInAnyState(States.Blocking) ? 0.5f : 1f;
 
-            player.Anim.SetFloat("move_x", move.x * mult);
-            player.Anim.SetFloat("move_y", move.y * mult);
+            player.Anim.SetFloat("move_x", move.x * blockingSpeedMultiplier);
+            player.Anim.SetFloat("move_y", move.y * blockingSpeedMultiplier);
         }
 
         private void GravityUpdate()
         {
-            var r = new Ray(transform.position, Vector3.down);
-            bool grounded = Physics.SphereCast(r, charController.radius + 0.1f, charController.height / 2f + 0.5f, groundLayers.value);
+            UpdateGroundedState();
+            if (!grounded)
+            {
+                Speed += gravity  * Time.deltaTime;
+            }
+            else
+            {
+                bool wasFalling = Speed.y < 0f;
+                if (wasFalling)
+                {
+                    OnHitGround();
+                }
+            }
+        }
+
+        private void UpdateGroundedState()
+        {
+            var ray = new Ray(transform.position, Vector3.down);
+            grounded = Physics.SphereCast(ray, charController.radius + 0.1f, charController.height / 2f + 0.5f, groundLayers.value);
             player.Anim.SetBool("grounded", grounded);
             // Animator also applies gravity, so when not grounded disable animator physics
             player.Anim.applyRootMotion = grounded;
+        }
 
-            if (!grounded)
+        private void OnHitGround()
+        {
+            float fallSpeed = Mathf.Abs(Speed.y);
+            float fallDamage = GetFallDamage(fallSpeed);
+            player.Health -= fallDamage;
+            // Reset the vertical speed when hitting ground
+            Speed = new Vector3(Speed.x, 0f, Speed.z);
+            // Teleport player vertically to avoid getting stuck in the ground when falling at high speeds
+            charController.Move(new Vector3(0f, -0.5f, 0f));
+        }
+
+        private float GetFallDamage(float fallSpeed)
+        {
+            const float minimumFallDamageSpeed = 15f;
+            if (fallSpeed > minimumFallDamageSpeed)
             {
-                Movement += gravity * gravityMult * Time.deltaTime;
+                return Mathf.CeilToInt(fallSpeed * 3f);
             }
-            else if (Movement.y < 0f)
+            else
             {
-                if (Mathf.Abs(Movement.y) > 15f)
-                {
-                    player.Stamina.Value -= Mathf.CeilToInt(Mathf.Abs(Movement.y) * 3f);
-                }
-                Movement = new Vector3(Movement.x, 0f, Movement.z);
-                charController.Move(new Vector3(0f, -0.5f, 0f));
+                return 0f;
             }
         }
 
@@ -121,15 +148,18 @@ namespace BrightSouls
         {
             public MoveCommand(Player owner) : base(owner) { }
 
-            public override bool IsValid()
+            public override bool CanExecute()
             {
-                bool isInValidState = !player.IsInAnyState(States.Dodging, States.Stagger, States.Dead);
-                return isInValidState;
+                bool canMove = !player.IsInAnyState(States.Dodging, States.Stagger, States.Dead);
+                return canMove;
             }
 
             public override void Execute(Vector2 dir)
             {
-                player.Motor.MovementUpdate(dir);
+                if(CanExecute())
+                {
+                    player.Motor.MovementUpdate(dir);
+                }
             }
         }
     }

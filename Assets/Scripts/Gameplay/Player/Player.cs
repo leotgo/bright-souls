@@ -19,6 +19,12 @@ namespace BrightSouls
         public StaggerBehaviour Stagger { get => stagger; }
         public StaminaBehaviour Stamina { get => stamina; }
 
+        public float Health
+        {
+            get => this.Attributes.GetAttribute<HealthAttribute>().Value;
+            set => this.Attributes.GetAttribute<HealthAttribute>().Value = value;
+        }
+
         public override AttributesContainer Attributes { get => attributes; }
 
         [Header("Component References")]
