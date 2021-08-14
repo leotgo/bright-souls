@@ -48,16 +48,25 @@ namespace BrightSouls
             }
         }
 
+        public bool IsInState(States state)
+        {
+            foreach(var fsm in StateMachines)
+            {
+                if(fsm.IsInState(state))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool IsInAnyState(params States[] states)
         {
             foreach (var s in states)
             {
-                foreach (var fsm in StateMachines)
+                if(IsInState(s))
                 {
-                    if (fsm.IsInState(s))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

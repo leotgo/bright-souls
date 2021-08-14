@@ -40,8 +40,8 @@ namespace BrightSouls
         [SerializeField] private Player player;
         [SerializeField] private CharacterController charController;
         [Header("Physics Data")]
-        [SerializeField] private LayerMask groundLayers;
-        [SerializeField] private Vector3 gravity = new Vector3(0f, -9.81f, 0f);
+        [SerializeField] private PlayerPhysicsData physicsData;
+        [SerializeField] private WorldPhysicsData  worldPhysicsData;
 
         // Runtime
         public MotionSourceType MotionSource;
@@ -77,21 +77,14 @@ namespace BrightSouls
             move.performed += ctx => Move.Execute(move.ReadValue<Vector2>());
         }
 
-        // Will depend on camera type
-        private void MovementUpdate(Vector2 dir)
+        private void PerformGroundMovement(Vector2 input)
         {
-            Vector2 move = dir;
-            if (move.magnitude > 1f)
-            {
-                move = move.normalized;
-            }
-
-            player.Anim.SetFloat("move_speed", move.magnitude);
-
-            float blockingSpeedMultiplier = player.IsInAnyState(States.Blocking) ? 0.5f : 1f;
-
-            player.Anim.SetFloat("move_x", move.x * blockingSpeedMultiplier);
-            player.Anim.SetFloat("move_y", move.y * blockingSpeedMultiplier);
+            input = ClampMovementInput(input);
+            var moveSpeedMultiplier = GetMovementSpeedMultiplier();
+            // Actual transform movement is handled by the animator
+            player.Anim.SetFloat("move_speed", input.magnitude);
+            player.Anim.SetFloat("move_x", input.x * moveSpeedMultiplier);
+            player.Anim.SetFloat("move_y", input.y * moveSpeedMultiplier);
         }
 
         private void GravityUpdate()
@@ -99,7 +92,7 @@ namespace BrightSouls
             UpdateGroundedState();
             if (!grounded)
             {
-                Speed += gravity  * Time.deltaTime;
+                Speed += worldPhysicsData.Gravity  * Time.deltaTime;
             }
             else
             {
@@ -114,7 +107,7 @@ namespace BrightSouls
         private void UpdateGroundedState()
         {
             var ray = new Ray(transform.position, Vector3.down);
-            grounded = Physics.SphereCast(ray, charController.radius + 0.1f, charController.height / 2f + 0.5f, groundLayers.value);
+            grounded = Physics.SphereCast(ray, charController.radius + 0.1f, charController.height / 2f + 0.5f, physicsData.GroundDetectionLayers.value);
             player.Anim.SetBool("grounded", grounded);
             // Animator also applies gravity, so when not grounded disable animator physics
             player.Anim.applyRootMotion = grounded;
@@ -131,16 +124,46 @@ namespace BrightSouls
             charController.Move(new Vector3(0f, -0.5f, 0f));
         }
 
+        private float GetMovementSpeedMultiplier()
+        {
+            float moveSpeedMultiplier = 1f;
+            bool isBlocking = player.IsInState(States.Blocking);
+            if (isBlocking)
+            {
+                moveSpeedMultiplier *= physicsData.BlockingMoveSpeedMultiplier;
+            }
+            return moveSpeedMultiplier;
+        }
+
         private float GetFallDamage(float fallSpeed)
         {
-            const float minimumFallDamageSpeed = 15f;
-            if (fallSpeed > minimumFallDamageSpeed)
+            if (fallSpeed > physicsData.MinimumFallDamageSpeed)
             {
-                return Mathf.CeilToInt(fallSpeed * 3f);
+                return Mathf.CeilToInt(fallSpeed * physicsData.FallDamageMultiplier);
             }
             else
             {
                 return 0f;
+            }
+        }
+
+        private Vector2 ClampMovementInput(Vector2 input)
+        {
+            if (input.magnitude > 1f)
+            {
+                return input.normalized;
+            }
+            else
+            {
+                if (input.x < 0.1f)
+                {
+                    input.Set(0f, input.y);
+                }
+                if (input.y < 0.1f)
+                {
+                    input.Set(input.x, 0f);
+                }
+                return input;
             }
         }
 
@@ -154,11 +177,11 @@ namespace BrightSouls
                 return canMove;
             }
 
-            public override void Execute(Vector2 dir)
+            public override void Execute(Vector2 inputDirection)
             {
-                if(CanExecute())
+                if(this.CanExecute())
                 {
-                    player.Motor.MovementUpdate(dir);
+                    player.Motor.PerformGroundMovement(inputDirection);
                 }
             }
         }
