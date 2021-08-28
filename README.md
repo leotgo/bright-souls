@@ -10,7 +10,7 @@ This project is not classified as Free or Open Source Software, since compilatio
 | --------------------- | -------------------------------------------------------------------------- |
 | Youtube playlist      | <https://www.youtube.com/playlist?list=PL_fpVHZcfJO22Vk3WuliZjiNrcDc4Kgb8> |
 | itch.io page          | <https://leotgo.itch.io/bright-souls>                                      |
-| Unity Version         | 2021.1.6f1                                                                 |
+| Unity Version         | 2021.1.18f1                                                                 |
 
 ## Screenshots ##
 
