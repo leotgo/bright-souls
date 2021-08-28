@@ -9,11 +9,35 @@ namespace BrightSouls
     [RequireComponent(typeof(Player))]
     public class PlayerMotor : MonoBehaviour
     {
+        /* ---------------------------- Type Definitions ---------------------------- */
+
         public enum MotionSourceType
         {
             Motor,
             Animation
         }
+
+        // TODO: Move MoveCommand class into a separate file
+        public class MoveCommand : PlayerCommand<Vector2>
+        {
+            public MoveCommand(Player owner) : base(owner) { }
+
+            public override bool CanExecute()
+            {
+                bool canMove = !player.IsInAnyState(States.Dodging, States.Stagger, States.Dead);
+                return canMove;
+            }
+
+            public override void Execute(Vector2 inputDirection)
+            {
+                if (this.CanExecute())
+                {
+                    player.Motor.PerformGroundMovement(inputDirection);
+                }
+            }
+        }
+
+        /* ------------------------------- Properties ------------------------------- */
 
         public MoveCommand Move
         {
@@ -21,7 +45,9 @@ namespace BrightSouls
             private set;
         }
 
-        // Speed is currently only used for vertical movement (caused by gravity)
+        // Speed:
+        // * Only used for vertical movement caused by gravity.
+        //   Ground movement is handled by the Player's Animator.
         private Vector3 Speed
         {
             get
@@ -35,7 +61,8 @@ namespace BrightSouls
             }
         }
 
-        // Inspector-assigned values
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
+
         [Header("Component Refs")]
         [SerializeField] private Player player;
         [SerializeField] private CharacterController charController;
@@ -43,10 +70,13 @@ namespace BrightSouls
         [SerializeField] private PlayerPhysicsData physicsData;
         [SerializeField] private WorldPhysicsData  worldPhysicsData;
 
-        // Runtime
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
         public MotionSourceType MotionSource;
         private bool grounded = false;
         private Vector3 speed = Vector3.zero;
+
+        /* ------------------------------ Unity Events ------------------------------ */
 
         private void Start()
         {
@@ -66,6 +96,8 @@ namespace BrightSouls
             charController.Move(Speed * Time.deltaTime);
         }
 
+        /* ----------------------------- Initialization ----------------------------- */
+
         private void InitializeCommands()
         {
             Move = new MoveCommand(this.player);
@@ -76,6 +108,8 @@ namespace BrightSouls
             var move = player.Input.currentActionMap.FindAction("Move");
             move.performed += ctx => Move.Execute(move.ReadValue<Vector2>());
         }
+
+        /* --------------------------- Core Functionality --------------------------- */
 
         private void PerformGroundMovement(Vector2 input)
         {
@@ -124,6 +158,8 @@ namespace BrightSouls
             charController.Move(new Vector3(0f, -0.5f, 0f));
         }
 
+        /* --------------------------------- Helpers -------------------------------- */
+
         private float GetMovementSpeedMultiplier()
         {
             float moveSpeedMultiplier = 1f;
@@ -167,23 +203,6 @@ namespace BrightSouls
             }
         }
 
-        public class MoveCommand : PlayerCommand<Vector2>
-        {
-            public MoveCommand(Player owner) : base(owner) { }
-
-            public override bool CanExecute()
-            {
-                bool canMove = !player.IsInAnyState(States.Dodging, States.Stagger, States.Dead);
-                return canMove;
-            }
-
-            public override void Execute(Vector2 inputDirection)
-            {
-                if(this.CanExecute())
-                {
-                    player.Motor.PerformGroundMovement(inputDirection);
-                }
-            }
-        }
+        /* -------------------------------------------------------------------------- */
     }
 }
