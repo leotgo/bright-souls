@@ -5,6 +5,36 @@ EditorUserSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 4
   m_ConfigSettings:
+    RecentlyUsedScenePath-0:
+      value: 224247031146467a1e1d093650104b1f0412577908671524382d143ccce52308f7e935e1a80934393507fb330a040e32f0030c18b938010e1d0be9011fbf2a1c1cc711c009860a12c20d05
+      flags: 0
+    RecentlyUsedScenePath-1:
+      value: 224247031146467a1e1d093650104b1f0412571f056714000a691c3de6a01915cda703c0a76f700f3a07e1391771557fbf4a210ee4044a381402f80d05b1051d18d101
+      flags: 0
+    RecentlyUsedScenePath-2:
+      value: 224247031146467a1e1d093650104b1f0412571c0a10690320261636a2a6741defe533fba71c07731d07e2334b0d023afc0f1a44e50605001431f90b1cf040415fd016cc0ed1
+      flags: 0
+    RecentlyUsedScenePath-3:
+      value: 224247031146467a1e1d093650104b1f0412571f056714000a691c3de6a01915cda703c0a76f700f3a07e1391771537fbf4a2a03f7190b08050bef4e22fa1c1612d1588d49ec5652de1715dad4
+      flags: 0
+    RecentlyUsedScenePath-4:
+      value: 224247031146467a1e1d093650104b1f0412571c0a10691b3f200d27edc60c77c0eb39e6e31c07731b0ee033001a0432fd441c05ff1f13
+      flags: 0
+    RecentlyUsedScenePath-5:
+      value: 224247031146467a1e1d093650104b1f0412571c0a10690320261636a2a6741defe533fba71c07731d07e2334b0d023afc0f1a44e50605001431f90b1cf040425fd016cc0ed1
+      flags: 0
+    RecentlyUsedScenePath-6:
+      value: 224247031146467a1e1d093650104b1f0412571c0a10690320261636a2a6741defe533fba71c07731d07e2334b0d023afc0f1a44e50605001431f90b1cf040405fd016cc0ed1
+      flags: 0
+    RecentlyUsedScenePath-7:
+      value: 224247031146467a1e1d093650104b1f0412571f056714000a691c3de6a01915cda703c0a76f700f3a07e1391771577fbf4a2005b62c0b061440e80018eb09
+      flags: 0
+    RecentlyUsedScenePath-8:
+      value: 224247031146467a1e1d093650104b1f0412571f056714000a691c3de6a01915cda703c0a76f700f3a07e1391771527fbf4a2a03f7190b08050bef4e22fa1c1612d1588d36c10c08825709c0c409c8
+      flags: 0
+    RecentlyUsedScenePath-9:
+      value: 22424703114646680e0b0227036c6f021f041724631b051e12190f3af1ef3a76f7e93ffdfe
+      flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
       flags: 0
@@ -15,5 +45,7 @@ EditorUserSettings:
   m_SemanticMergeMode: 2
   m_VCShowFailedCheckout: 1
   m_VCOverwriteFailedCheckoutAssets: 1
-  m_VCOverlayIcons: 1
+  m_VCProjectOverlayIcons: 1
+  m_VCHierarchyOverlayIcons: 1
+  m_VCOtherOverlayIcons: 1
   m_VCAllowAsyncUpdate: 0
