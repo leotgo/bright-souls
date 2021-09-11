@@ -1,0 +1,32 @@
+@startuml
+title AI Base Behaviour State Diagram
+
+state Default {
+    state Idle #orange
+
+    Idle : AI stays in place.
+    Patrolling : AI is walking around\nsearching for targets.
+    Seeking : AI moves in the\ndirection of target.
+    CombatMovement : AI keeps attacking\nand maintaining\nan optimal distance.
+
+    [*] --> Idle : Start (on spawn)
+    Idle --> Patrolling : After 2 seconds
+    Idle --> Seeking : Has a target
+    Patrolling --> Seeking : Has a target
+    Seeking --> CombatMovement : Is in\nattack range
+    Seeking --> Idle : Target dead or\nout of reach
+    CombatMovement --> Seeking : Is out of\nattack range
+    CombatMovement --> Idle : Target dead or\nout of reach
+}
+
+state Death {
+    state Any #cyan
+    state Dead : AI is dead.
+
+    Any --> Dead : AI dies
+    Dead --> [*] : End (on despawn)
+}
+
+scale 1.3
+hide empty description
+@enduml

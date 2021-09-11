@@ -1,0 +1,35 @@
+@startuml
+title State Machine Class Diagram
+
+class StateMachine {
+    +IsInState<StateType>() : bool
+    +SetState<StateType>()
+    +States : IState[]
+    +Transitions : StateTransition[]
+    +CurrentStateTime : float
+    +CurrentState : IState
+}
+
+class StateTransition {
+    +Source : IState
+    +Target : IState
+    +Condition : IStateTransitionCondition
+}
+
+interface IState {
+    +OnStateEnter()
+    +OnStateUpdate()
+    +OnStateExit()
+}
+
+interface IStateTransitionCondition {
+    +Validate() : bool
+}
+
+StateMachine "1" o-- "n" IState
+StateMachine "1" o-- "n" StateTransition
+StateTransition "1" o-- "n" IStateTransitionCondition
+
+scale 1.3
+hide empty members
+@enduml
