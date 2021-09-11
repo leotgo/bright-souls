@@ -6,32 +6,27 @@ using Patterns.Observer;
 
 namespace BrightSouls.UI
 {
-    [RequireComponent(typeof(Text))]
-    public class UIHealthText : MonoBehaviour, IObserver
+    public class UIHealthText : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Character owner;
-        private Text uiText;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private Text uiText;
 
-        void Start ()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start ()
         {
-            uiText = GetComponent<Text>();
-            this.Observe(Message.Combat_HealthChange);
+            owner.Health.onAttributeChanged += OnHealthChanged;
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
-        {
-            bool senderIsOwner = (Object)sender == owner;
-            if (!senderIsOwner)
-                return;
+        /* ----------------------- Attribute Change Callbacks ----------------------- */
 
-            switch (msg)
-            {
-                case Message.Combat_HealthChange:
-                    float diff = (float)args[0];
-                    uiText.text = Mathf.CeilToInt(owner.Attributes.GetAttribute<HealthAttribute>().Value / owner.Attributes.GetAttribute<MaxHealthAttribute>().Value * 100f).ToString() + "%";
-                    break;
-            }
+        private void OnHealthChanged(float oldValue, float newValue)
+        {
+            uiText.text = Mathf.CeilToInt(owner.Health.Value / owner.MaxHealth.Value * 100f).ToString() + "%";
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

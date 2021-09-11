@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Patterns.Observer;
+using BrightSouls.Player;
 
 namespace BrightSouls.UI
 {
-    public class UIStaminaBarDelayed : MonoBehaviour, IObserver
+    public class UIStaminaBarDelayed : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Player player;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private Image bar;
+        [SerializeField] private float updateDelay = 1f;
 
+        /* ----------------------------- Runtime Fields ----------------------------- */
 
-        public float updateDelay = 1f;
         private float updateDelayTime = 0f;
         private bool isWaitingUpdate = false;
-
         private float updateTime = 0f;
         private float updateDuration = 2f;
         private bool isUpdating;
 
-        private Image bar;
-
+        /* ------------------------------ Unity Events ------------------------------ */
 
         private void Start()
         {
-            bar = GetComponent<Image>();
-            this.Observe(Message.Combat_StaminaChange);
+            owner.Stamina.onAttributeChanged += OnStaminaChanged;
             isUpdating = false;
         }
 
@@ -40,7 +41,7 @@ namespace BrightSouls.UI
                     updateTime = updateDuration;
                     isUpdating = false;
                 }
-                bar.fillAmount = Mathf.SmoothStep(bar.fillAmount, (float)player.Stamina.Value / (float)player.Stamina.maxValue, updateTime / updateDuration);
+                bar.fillAmount = Mathf.SmoothStep(bar.fillAmount, owner.Stamina.Value / owner.MaxStamina.Value, updateTime / updateDuration);
             }
             else
             {
@@ -56,30 +57,30 @@ namespace BrightSouls.UI
             }
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
+        /* ------------------------- Attribute Change Events ------------------------ */
+
+        private void OnStaminaChanged(float oldValue, float newValue)
         {
-            bool senderIsPlayer = (Object)sender == player;
-            if (!senderIsPlayer)
-                return;
-
-            switch (msg)
+            if (oldValue > newValue)
             {
-                case Message.Combat_StaminaChange:
-                    float diff = (float)args[0];
-                    if(diff < 0f)
-                    {
-                        updateTime = 0f;
-                        updateDelayTime = 0f;
-                        isWaitingUpdate = true;
-                        isUpdating = false;
-                    }
-                    else
-                    {
-                        bar.fillAmount = player.Stamina.Value / player.Stamina.maxValue;
-                    }
-
-                    break;
+                ResetBarDelay();
+            }
+            else
+            {
+                bar.fillAmount = owner.Stamina.Value / owner.MaxStamina.Value;
             }
         }
+
+        /* --------------------------------- Helpers -------------------------------- */
+
+        private void ResetBarDelay()
+        {
+            updateTime = 0f;
+            updateDelayTime = 0f;
+            isWaitingUpdate = true;
+            isUpdating = false;
+        }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

@@ -2,35 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
+using DuloGames.UI;
 
 namespace BrightSouls.UI
 {
-    public class UIHealthBar : MonoBehaviour, IObserver
+    public class UIHealthBar : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Character owner;
-        //private UIProgressBar healthBar;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private UIProgressBar healthBar;
 
-        // Use this for initialization
-        void Start ()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start ()
         {
-            //healthBar = GetComponent<UIProgressBar>();
-            this.Observe(Message.Combat_HealthChange);
+            owner.Health.onAttributeChanged += OnHealthChanged;
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
-        {
-            bool senderIsPlayer = (Object)sender == owner;
-            if (!senderIsPlayer)
-                return;
+        /* ----------------------- Attribute Change Callbacks ----------------------- */
 
-            switch(msg)
-            {
-                case Message.Combat_HealthChange:
-                    float diff = (float)args[0];
-                    //healthBar.fillAmount = owner.Health / owner.maxHealth;
-                    break;
-            }
+        private void OnHealthChanged(float oldValue, float newValue)
+        {
+            healthBar.fillAmount = owner.Health.Value / owner.MaxHealth.Value;
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

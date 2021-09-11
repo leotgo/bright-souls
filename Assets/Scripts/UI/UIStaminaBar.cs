@@ -2,35 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
+using BrightSouls.Player;
+using DuloGames.UI;
 
 namespace BrightSouls.UI
 {
-    public class UIStaminaBar : MonoBehaviour, IObserver
+    public class UIStaminaBar : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Player player;
-        //private UIProgressBar staminaBar;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private UIProgressBar staminaBar;
 
-        // Use this for initialization
-        void Start ()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start ()
         {
-            //staminaBar = GetComponent<UIProgressBar>();
-            this.Observe(Message.Combat_StaminaChange);
+            owner.Stamina.onAttributeChanged += OnStaminaChanged;
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
-        {
-            bool senderIsPlayer = (Object)sender == player;
-            if (!senderIsPlayer)
-                return;
+        /* ----------------------- Attribute Change Callbacks ----------------------- */
 
-            switch(msg)
-            {
-                case Message.Combat_StaminaChange:
-                    float diff = (float)args[0];
-                    //staminaBar.fillAmount = player.Stamina.Value / player.Stamina.maxValue;
-                    break;
-            }
+        private void OnStaminaChanged(float oldValue, float newValue)
+        {
+            staminaBar.fillAmount = owner.Stamina.Value / owner.MaxStamina.Value;
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

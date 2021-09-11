@@ -6,33 +6,29 @@ using Patterns.Observer;
 
 namespace BrightSouls.UI
 {
-    [RequireComponent(typeof(Text))]
-    public class UIStaminaText : MonoBehaviour, IObserver
+    public class UIStaminaText : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Character owner;
-        private Text uiText;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private Text uiText;
 
-        void Start()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start()
         {
-            uiText = GetComponent<Text>();
-            this.Observe(Message.Combat_StaminaChange);
+            owner.Stamina.onAttributeChanged += OnStaminaChanged;
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
-        {
-            bool senderIsOwner = (Object)sender == owner;
-            if (!senderIsOwner)
-                return;
+        /* ----------------------- Attribute Change Callbacks ----------------------- */
 
-            switch (msg)
-            {
-                case Message.Combat_StaminaChange:
-                    float diff = (float)args[0];
-                    var stamina = owner.GetComponent<StaminaBehaviour>();
-                    uiText.text = Mathf.CeilToInt(stamina.Value / stamina.maxValue * 100f).ToString() + "%";
-                    break;
-            }
+        private void OnStaminaChanged(float oldValue, float newValue)
+        {
+            var stamina = owner.Stamina;
+            var maxStamina = owner.MaxStamina;
+            uiText.text = Mathf.CeilToInt(stamina.Value / maxStamina.Value * 100f).ToString() + "%";
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

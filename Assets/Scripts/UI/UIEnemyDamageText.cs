@@ -6,45 +6,42 @@ using Patterns.Observer;
 
 namespace BrightSouls.UI
 {
-    public class UIEnemyDamageText : MonoBehaviour, IObserver
+    public class UIEnemyDamageText : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public Character owner;
-        private Text damageText;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private Text damageText;
+
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
         private TimerAction textDisappear;
         private float accumulatedDamage = 0f;
 
-        // Use this for initialization
-        void Start()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start()
         {
-            if (!owner)
-                owner = GetComponentInParent<Character>();
-            damageText = GetComponent<Text>();
             damageText.enabled = false;
             accumulatedDamage = 0f;
-            this.Observe(Message.Combat_HealthChange);
             textDisappear = new TimerAction(this, 2f, () => {
                 damageText.enabled = false;
                 accumulatedDamage = 0f;
             });
+            owner.Health.onAttributeChanged += OnHealthChanged;
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
+        /* ----------------------------- Event Callbacks ---------------------------- */
+
+        private void OnHealthChanged(float oldValue, float newValue)
         {
-            bool senderIsOwner = (Object)sender == owner;
-            if (!senderIsOwner)
-                return;
-
-            switch (msg)
-            {
-                case Message.Combat_HealthChange:
-                    float diff = (float)args[0];
-                    accumulatedDamage += Mathf.Abs(diff);
-                    damageText.enabled = true;
-                    damageText.text = Mathf.CeilToInt(accumulatedDamage).ToString();
-                    textDisappear.Start();
-                    break;
-            }
+            float healthDiff = newValue - oldValue;
+            accumulatedDamage += Mathf.Abs(healthDiff);
+            damageText.enabled = true;
+            damageText.text = Mathf.CeilToInt(accumulatedDamage).ToString();
+            textDisappear.Start();
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

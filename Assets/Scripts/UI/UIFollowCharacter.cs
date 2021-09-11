@@ -6,20 +6,20 @@ namespace BrightSouls.UI
 {
     public class UIFollowCharacter : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        private float yOffset = 1.25f;
-        private Character owner;
-        private RectTransform rt;
+        [SerializeField] private ICharacter owner;
+        [SerializeField] private float yOffset = 1.25f;
+        [SerializeField] private RectTransform rt;
 
-        private void Start()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Update ()
         {
-            owner = GetComponentInParent<Character>();
-            rt = GetComponent<RectTransform>();
-        }
-
-        private void Update () {
             var worldPoint = Camera.main.WorldToScreenPoint(owner.transform.position + Vector3.up * yOffset);
             rt.position = worldPoint;
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

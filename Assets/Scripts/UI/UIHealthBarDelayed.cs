@@ -6,28 +6,28 @@ using Patterns.Observer;
 
 namespace BrightSouls.UI
 {
-    public class UIHealthBarDelayed : MonoBehaviour, IObserver
+    public class UIHealthBarDelayed : MonoBehaviour
     {
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        [SerializeField] private Character owner;
+        [SerializeField] private ICombatCharacter owner;
+        [SerializeField] private Image bar;
+        [SerializeField] private float updateDelay = 1f;
 
-        public float updateDelay = 1f;
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
         private float updateDelayTime = 0f;
         private bool isWaitingUpdate = false;
-
         private float updateTime = 0f;
         private float updateDuration = 2f;
         private bool isUpdating;
 
-        private Image bar;
+        /* ------------------------------ Unity Events ------------------------------ */
 
         private void Start ()
         {
-            if(!owner)
-                owner = GetComponentInParent<Character>();
-            bar = GetComponent<Image>();
-            this.Observe(Message.Combat_HealthChange);
             isUpdating = false;
+            owner.Health.onAttributeChanged += OnHealthChanged;
         }
 
         private void Update()
@@ -40,7 +40,7 @@ namespace BrightSouls.UI
                     updateTime = updateDuration;
                     isUpdating = false;
                 }
-                bar.fillAmount = Mathf.SmoothStep(bar.fillAmount, owner.Attributes.GetAttribute<HealthAttribute>().Value / owner.Attributes.GetAttribute<MaxHealthAttribute>().Value, updateTime / updateDuration);
+                bar.fillAmount = Mathf.SmoothStep(bar.fillAmount, owner.Health.Value / owner.MaxHealth.Value, updateTime / updateDuration);
             }
             else
             {
@@ -56,30 +56,23 @@ namespace BrightSouls.UI
             }
         }
 
-        public void OnNotification(object sender, Message msg, params object[] args)
+        /* ----------------------- Attribute Change Callbacks ----------------------- */
+
+        private void OnHealthChanged(float oldValue, float newValue)
         {
-            bool senderIsPlayer = (Object)sender == owner;
-            if (!senderIsPlayer)
-                return;
-
-            switch (msg)
+            if (oldValue > newValue)
             {
-                case Message.Combat_HealthChange:
-                    float diff = (float)args[0];
-                    if (diff < 0)
-                    {
-                        updateTime = 0f;
-                        updateDelayTime = 0f;
-                        isWaitingUpdate = true;
-                        isUpdating = false;
-                    }
-                    else
-                    {
-                        bar.fillAmount = owner.Attributes.GetAttribute<HealthAttribute>().Value / owner.Attributes.GetAttribute<MaxHealthAttribute>().Value;
-                    }
-
-                    break;
+                updateTime = 0f;
+                updateDelayTime = 0f;
+                isWaitingUpdate = true;
+                isUpdating = false;
+            }
+            else
+            {
+                bar.fillAmount = owner.Health.Value / owner.MaxHealth.Value;
             }
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

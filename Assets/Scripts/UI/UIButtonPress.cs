@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using BrightSouls.Player;
 
 namespace BrightSouls.UI
 {
     public class UIButtonPress : MonoBehaviour
     {
+        /* ------------------------------- Definitions ------------------------------ */
 
         public enum MouseKeyboardDisplay
         {
@@ -13,24 +15,16 @@ namespace BrightSouls.UI
             Keyboard
         }
 
-        private Player player;
-        private Image img;
-        private Color defaultColor;
-        private float defaultScale;
-        private Graphic[] graphicElements;
-        //public PlayerActionType action;
-        public MouseKeyboardDisplay mkDisplay = MouseKeyboardDisplay.Keyboard;
-        public Color pressColor = Color.yellow;
-        [Range(1f, 20f)]
-        public float lerpSpeed = 10f;
-        [Range(0f, 1f)]
-        public float disabledAlpha = 0.3f;
-        private bool disabled;
-        public bool Disabled {
-            get {
+        /* ------------------------------- Properties ------------------------------- */
+
+        public bool Disabled
+        {
+            get
+            {
                 return disabled;
             }
-            set {
+            set
+            {
                 disabled = value;
                 foreach (var g in graphicElements)
                 {
@@ -40,11 +34,27 @@ namespace BrightSouls.UI
             }
         }
 
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
+
+        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Image img;
+        [SerializeField] private Graphic[] graphicElements;
+        [SerializeField] private MouseKeyboardDisplay mkDisplay = MouseKeyboardDisplay.Keyboard;
+        [SerializeField] private Color pressColor = Color.yellow;
+        //[SerializeField] private PlayerActionType action;
+        [SerializeField] [Range(1f, 20f)] private float lerpSpeed = 10f;
+        [SerializeField] [Range(0f, 1f)] private float disabledAlpha = 0.3f;
+
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
+        private Color defaultColor;
+        private float defaultScale;
+        private bool disabled;
+
+        /* ------------------------------ Unity Events ------------------------------ */
+
         private void Start()
         {
-            player = GetComponentInParent<Player>();
-            img = GetComponent<Image>();
-            graphicElements = GetComponentsInChildren<Graphic>();
             defaultColor = img.color;
             defaultScale = transform.localScale.x;
         }
@@ -70,6 +80,8 @@ namespace BrightSouls.UI
             }
         }
 
+        /* --------------------------------- Helpers -------------------------------- */
+
         private PlayerCommandBase GetCommand()
         {
             /*switch (action)
@@ -92,5 +104,7 @@ namespace BrightSouls.UI
         {
             return false;//return player.Input.IsPressingAction(action);
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

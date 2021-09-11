@@ -3,68 +3,78 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Patterns.Observer;
+using BrightSouls.Player;
 
 namespace BrightSouls.UI
 {
-    public class UIControllerEnemy : MonoBehaviour, IObserver
+    public class UIControllerEnemy : MonoBehaviour
     {
+        /* ------------------------------- Properties ------------------------------- */
 
-        [SerializeField] private Canvas UIElementCanvas;
-
-        private Character owner;
-        private TimerAction disableUITimer;
-
-        private IEnumerator Start()
+        public PlayerCombatController PlayerCombat
         {
-            yield return null;
-            owner = GetComponentInParent<Character>();
-            UIElementCanvas.enabled = false;
-            disableUITimer = new TimerAction(this, 5f, () =>
+            get => playerCombat;
+            set
             {
-                UIElementCanvas.enabled = false;
-            });
-
-            this.Observe(Message.Combat_LockOnTarget);
-            this.Observe(Message.Combat_HealthChange);
-        }
-
-        private void Update()
-        {
-        }
-
-        public void OnNotification(object sender, Message msg, params object[] args)
-        {
-            if (owner.IsInAnyState(States.Dead))
-            {
-                UIElementCanvas.enabled = false;
-                return;
-            }
-            if (msg == Message.Combat_LockOnTarget)
-            {
-                var target = args[0] as Character;
-                if (target == owner)
+                if(playerCombat == null)
                 {
-                    UIElementCanvas.enabled = true;
-                    disableUITimer.Stop();
+                    playerCombat = value;
+                    playerCombat.onLockedOn += OnPlayerLockOn;
                 }
                 else
                 {
-                    if (!disableUITimer.IsCounting())
-                        UIElementCanvas.enabled = false;
+                    playerCombat = value;
                 }
             }
-            else if (msg == Message.Combat_HealthChange && (Object)sender == owner)
+        }
+
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
+
+        [SerializeField] private Canvas UIElementCanvas;
+        [SerializeField] private ICombatCharacter owner;
+
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
+        private TimerAction disableUITimer;
+        private PlayerCombatController playerCombat;
+
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Start()
+        {
+            UIElementCanvas.enabled = false;
+            disableUITimer = new TimerAction(this, 5f, () => UIElementCanvas.enabled = false);
+            owner.Health.onAttributeChanged += OnHealthChanged;
+        }
+
+        /* ----------------------------- Event Callbacks ---------------------------- */
+
+        private void OnHealthChanged(float oldValue, float newValue)
+        {
+            if (owner.IsDead)
             {
-                if (!UIElementCanvas.enabled)
-                {
-                    UIElementCanvas.enabled = true;
-                    disableUITimer.Start();
-                }
+                UIElementCanvas.enabled = false;
             }
-            else if (msg == Message.Combat_Death && (Object)sender == owner)
+            if (!UIElementCanvas.enabled)
+            {
+                UIElementCanvas.enabled = true;
+                disableUITimer.Start();
+            }
+        }
+
+        private void OnPlayerLockOn(ICombatCharacter playerTarget)
+        {
+            if (playerTarget == owner)
+            {
+                UIElementCanvas.enabled = true;
+                disableUITimer.Stop();
+            }
+            else if (!disableUITimer.IsCounting())
             {
                 UIElementCanvas.enabled = false;
             }
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }
