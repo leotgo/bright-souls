@@ -7,10 +7,10 @@ namespace BrightSouls
     [CreateAssetMenu(fileName = "AttackData", menuName = "BrightSouls/Data/Combat/AttackData", order = 0)]
     public class AttackData : ScriptableObject
     {
-        public List<CombatEffect> SourceEffects { get => sourceEffects; }
-        public List<CombatEffect> TargetEffects { get => targetEffects; }
+        public List<ICombatEffect> SourceEffects { get => sourceEffects; }
+        public List<ICombatEffect> TargetEffects { get => targetEffects; }
 
-        [SerializeField] public List<CombatEffect> sourceEffects;
-        [SerializeField] public List<CombatEffect> targetEffects;
+        [SerializeReference] public List<ICombatEffect> sourceEffects;
+        [SerializeReference] public List<ICombatEffect> targetEffects;
     }
 }

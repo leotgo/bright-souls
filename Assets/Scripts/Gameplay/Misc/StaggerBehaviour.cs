@@ -7,7 +7,7 @@ namespace BrightSouls
 {
     public class StaggerBehaviour : MonoBehaviour
     {
-        private Character owner;
+        [SerializeField] private ICombatCharacter owner;
 
         public int maxStaggerHealth = 100;
         private int health = 100;
@@ -16,7 +16,7 @@ namespace BrightSouls
                 return health;
             }
             set {
-                if (owner.Attributes.GetAttribute<StatusAttribute>().HasStatus(CharacterStatus.Unstoppable))
+                if (owner.Status.HasStatus(CharacterStatus.Unstoppable))
                     return;
 
                 if(value < health)
@@ -25,13 +25,13 @@ namespace BrightSouls
                 int comp = -1 * (int)bonusHealth;
                 if (health <= comp)
                 {
-                    owner.GetComponent<Animator>().SetTrigger("stagger");
+                    owner.transform.GetComponent<Animator>().SetTrigger("stagger");
                     staggerCounter++;
                     if (staggerCounter >= maxConsecutiveStaggers)
                     {
                         StaggerHealth = 100;
                         staggerCounter = 0;
-                        owner.Attributes.GetAttribute<StatusAttribute>().AddStatus(CharacterStatus.Unstoppable);
+                        owner.Status.AddStatus(CharacterStatus.Unstoppable);
                         staggerInvincibilityStop.Start();
                     }
                 }
@@ -58,15 +58,13 @@ namespace BrightSouls
 
         private void Start()
         {
-            owner = GetComponent<Character>();
-
             staggerRecover = new TimerAction(this, this.staggerRecoverDelay, () => {
                 this.StaggerHealth = 100;
-                owner.Attributes.GetAttribute<StatusAttribute>().RemoveStatus(CharacterStatus.Staggered);
+                owner.Status.RemoveStatus(CharacterStatus.Staggered);
             });
             staggerInvincibilityStop = new TimerAction(this, this.staggerInvincibilityTime, () =>
             {
-                owner.Attributes.GetAttribute<StatusAttribute>().RemoveStatus(CharacterStatus.Unstoppable);
+                owner.Status.RemoveStatus(CharacterStatus.Unstoppable);
             });
 
             this.StaggerHealth = maxStaggerHealth;

@@ -22,13 +22,13 @@ namespace BrightSouls
         private Attack[] attacks;
         private Attack currentAttack;
 
-        private Character wielder;
+        private ICombatCharacter wielder;
         private Hitbox hitbox;
 
         public void OnNotification(object sender, Message msg, params object[] args)
         {
             var senderAsObj = (UnityEngine.Object)sender;
-            var senderIsSelf = senderAsObj == this || senderAsObj == wielder || senderAsObj == wielder.GetComponent<Animator>();
+            var senderIsSelf = senderAsObj == this || sender == wielder || senderAsObj == wielder.transform.GetComponent<Animator>();
             if (!senderIsSelf)
                 return;
 
@@ -60,12 +60,12 @@ namespace BrightSouls
 
         public override string ToString()
         {
-            return this.name + " (" + wielder.name + ")";
+            return this.name + " (" + wielder + ")";
         }
 
         internal virtual void OnHit(IHittable target)
         {
-            if ((target as Character) != wielder)
+            if ((target as ICharacter) != wielder)
             {
                 target.OnGetHit(currentAttack);
             }
@@ -81,7 +81,7 @@ namespace BrightSouls
 
         private void AssignComponents()
         {
-            wielder = GetComponentInParent<Character>();
+            wielder = GetComponentInParent<ICombatCharacter>();
             hitbox = GetComponentInChildren<Hitbox>();
             attacks = GetComponents<Attack>();
 

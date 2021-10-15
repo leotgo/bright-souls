@@ -10,7 +10,7 @@ namespace BrightSouls
         {
             get
             {
-                return _attackName;
+                return attackName;
             }
         }
 
@@ -18,29 +18,29 @@ namespace BrightSouls
         {
             get
             {
-                return _animatorString;
+                return animatorString;
             }
         }
 
-        public Character Source
+        public ICombatCharacter Source
         {
             get
             {
-                return m_source;
+                return source;
             }
         }
 
         public AttackData Data { get => data; }
 
         [SerializeField] private AttackData data;
-        [SerializeField] private AttackName _attackName = AttackName.None;
-        [SerializeField] private string _animatorString = "animator_string";
-        protected Character m_source;
+        [SerializeField] private AttackName attackName = AttackName.None;
+        [SerializeField] private string animatorString = "animator_string";
+        protected ICombatCharacter source;
 
-        public virtual void Activate(Character source)
+        public virtual void Activate(ICombatCharacter source)
         {
-            m_source = source;
-            source.GetComponent<Animator>().SetTrigger(_animatorString);
+            this.source = source;
+            source.transform.GetComponent<Animator>().SetTrigger(animatorString);
         }
     }
 }

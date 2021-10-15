@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
+using BrightSouls.Player;
 
 namespace BrightSouls
 {
     public class StaminaBehaviour : MonoBehaviour
     {
-        private Player player;
+        private PlayerComponentIndex player;
 
         [SerializeField] private float recoverAmount = 18f;
         private float bonusRecover = 0f;
@@ -41,7 +42,7 @@ namespace BrightSouls
 
         private void Start()
         {
-            this.player = GetComponent<Player>();
+            this.player = GetComponent<PlayerComponentIndex>();
             isRecovering = false;
         }
 
@@ -59,13 +60,13 @@ namespace BrightSouls
             }
             else if (isRecovering)
             {
-                if (player.IsInAnyState(States.Stagger))
+                if (player.State.IsStaggered)
                 {
                     staminaDecreased = true;
                     isRecovering = false;
                     recoverDelayTime = 0f;
                 }
-                float blockModifier = player.IsInAnyState(States.Blocking) ? blockRecoverModifier : 1f;
+                float blockModifier = player.State.IsBlocking ? blockRecoverModifier : 1f;
                 Value += blockModifier * (recoverAmount + bonusRecover) * Time.deltaTime;
                 if(Value >= maxValue)
                 {

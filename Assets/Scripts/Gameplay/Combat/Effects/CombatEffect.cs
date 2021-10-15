@@ -3,24 +3,23 @@ using System.Collections;
 
 namespace BrightSouls
 {
-    public abstract class CombatEffect
+    public interface ICombatEffect
     {
-        public abstract void Apply(Character target);
+        void Apply(ICombatCharacter target);
     }
 
-    public abstract class InstantEffect : CombatEffect { /* supposed to be empty */ }
-
-    public abstract class OvertimeEffect : CombatEffect
+    public abstract class OvertimeEffect : ICombatEffect
     {
         [SerializeField] private float tickTime;
         [SerializeField] private float duration;
 
-        public override void Apply(Character target)
+        public void Apply(ICombatCharacter target)
         {
-            target.StartCoroutine(UpdateRoutine());
+            // TODO add a global monobehaviour to take care of routines for Overtime Effects
+            //mono.StartCoroutine(UpdateRoutine());
         }
 
-        public IEnumerator UpdateRoutine()
+        private IEnumerator UpdateRoutine(ICombatCharacter target)
         {
             float time = 0f;
             float tick = 0f;
@@ -28,7 +27,7 @@ namespace BrightSouls
             {
                 if(tick > tickTime)
                 {
-                    Tick();
+                    OnEffectTick(target);
                     tick = 0f;
                 }
                 tick += Time.fixedDeltaTime;
@@ -38,15 +37,16 @@ namespace BrightSouls
             time = 0f;
         }
 
-        public abstract void Tick();
+        protected abstract void OnEffectTick(ICombatCharacter target);
     }
 
-    public class DamageHealth : InstantEffect
+    public class DamageHealth : ICombatEffect
     {
         [SerializeField] private float damageAmount;
 
-        public override void Apply(Character target)
+        public void Apply(ICombatCharacter target)
         {
+            target.Health.Value -= damageAmount;
         }
     }
 }

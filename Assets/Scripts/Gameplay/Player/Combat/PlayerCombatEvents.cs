@@ -9,8 +9,8 @@ namespace BrightSouls
         public event System.Action onStagger;
         public event System.Action onTakeDamage;
         public event System.Action onBlockHit;
-        public event System.Action onBreakBlock;
-        public event System.Action<Vector3> onDodgeExecuted;
+        public event System.Action onBlockBroken;
+        public event System.Action<Vector3> onDodge;
 
         /* ------------------------------ Event Raisers ----------------------------- */
 
@@ -29,14 +29,14 @@ namespace BrightSouls
             onBlockHit.Invoke();
         }
 
-        public void RaiseOnBreakBlockEvent()
+        public void RaiseOnBlockBrokenEvent()
         {
-            onBreakBlock.Invoke();
+            onBlockBroken.Invoke();
         }
 
         public void RaiseOnDodgeExecutedEvent(Vector3 dir)
         {
-            onDodgeExecuted.Invoke(dir);
+            onDodge.Invoke(dir);
         }
 
         /* -------------------------------------------------------------------------- */

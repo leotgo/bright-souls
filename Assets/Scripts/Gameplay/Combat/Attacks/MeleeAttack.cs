@@ -57,12 +57,12 @@ namespace BrightSouls
 
         public void OnNotification(object sender, Message msg, params object[] args)
         {
-            if (!Source)
+            if (Source == null)
             {
                 return;
             }
 
-            bool senderIsSource = (Object)sender == Source || (Object)sender == Source.GetComponent<Animator>();
+            bool senderIsSource = sender == Source || (Object)sender == Source.transform.GetComponent<Animator>();
             if (!senderIsSource && (Object)sender != hitbox)
             {
                 return;
@@ -73,7 +73,6 @@ namespace BrightSouls
                 case Message.Combat_AttackStart:
                     {
                     attackStarted = true;
-                    var staminaManager = Source.GetComponent<StaminaBehaviour>();
                     }
                     break;
                 case Message.Combat_AttackEnd:
@@ -94,15 +93,15 @@ namespace BrightSouls
                 case Message.Combat_DetectHit:
                     {
                         var target = (IHittable)args[0];
-                        if (target is Character)
+                        if (target is ICombatCharacter)
                         {
-                            var targetCharacter = (Character)target;
-                            var targetFaction = targetCharacter.Attributes.GetAttribute<FactionAttribute>().Value;
-                            var sourceFaction = Source.Attributes.GetAttribute<FactionAttribute>().Value;
+                            var targetCharacter = (ICombatCharacter)target;
+                            var targetFaction = targetCharacter.Faction.Value;
+                            var sourceFaction = Source.Faction.Value;
 
                             if(targetFaction == sourceFaction)
                             {
-                                Debug.LogFormat("COMBAT: {0} tried to hit {1}, but both were same faction.", this.Source, target);
+                                Debug.Log($"COMBAT: {Source} tried to hit {target}, but both were from same faction.");
                             }
                             else
                             {
@@ -116,17 +115,13 @@ namespace BrightSouls
             }
         }
 
-        public override void Activate(Character source)
+        public override void Activate(ICombatCharacter source)
         {
-            var staminaManager = source.GetComponent<StaminaBehaviour>();
-            if (staminaManager)
+            var stamina = source.Stamina;
+            if (stamina.Value > 0)
             {
-                if (staminaManager.Value <= 0)
-                {
-                    return;
-                }
+                base.Activate(source);
             }
-            base.Activate(source);
         }
     }
 }

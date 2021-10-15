@@ -2,54 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
+using BrightSouls.Player;
 
 namespace BrightSouls
 {
     public class LockOnDetector : MonoBehaviour
     {
-        public List<Character> PossibleTargets
+        public List<ICombatCharacter> PossibleTargets
         {
             get
             {
-                List<Character> targets = new List<Character>(possibleTargets);
-                targets.RemoveAll((Character c) => { return c.IsInAnyState(States.Dead) || !c.GetComponentInChildren<Renderer>().isVisible; });
+                List<ICombatCharacter> targets = new List<ICombatCharacter>(possibleTargets);
+                // TODO change PlayerStateDead to a generic dead character state
+                targets.RemoveAll((ICombatCharacter character) => { return character.IsDead || !character.transform.GetComponentInChildren<Renderer>().isVisible; });
                 return targets;
             }
         }
 
         private bool initialized = false;
-        private Player owner;
-        private List<Character> possibleTargets;
+        private ICombatCharacter owner;
+        private List<ICombatCharacter> possibleTargets;
 
         private void Start()
         {
-            owner = GetComponentInParent<Player>();
-            possibleTargets = new List<Character>();
+            owner = GetComponentInParent<PlayerComponentIndex>();
+            possibleTargets = new List<ICombatCharacter>();
             initialized = true;
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if(!initialized)
+            {
                 return;
+            }
 
-            Character character = other.GetComponent<Character>();
-            if (!character)
+            ICombatCharacter character = other.GetComponent<ICombatCharacter>();
+            if (character != null)
+            {
                 return;
+            }
             else if (character == owner)
+            {
                 return;
+            }
 
-            if (!possibleTargets.Contains(character) && !character.IsInAnyState(States.Dead))
+            if (!possibleTargets.Contains(character) && !character.IsDead)
+            {
                 possibleTargets.Add(character);
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            Character character = other.GetComponent<Character>();
-            if (!character)
+            ICombatCharacter character = other.GetComponent<ICombatCharacter>();
+            if (character != null)
+            {
                 return;
+            }
             else if (character == owner)
+            {
                 return;
+            }
 
             if (possibleTargets.Contains(character))
                 possibleTargets.Remove(character);
@@ -57,7 +71,12 @@ namespace BrightSouls
 
         public void RefreshTargets()
         {
-            possibleTargets.RemoveAll((Character c) => { return c.IsInAnyState(States.Dead); });
+            RemoveAllDeadCharacters();
+        }
+
+        private void RemoveAllDeadCharacters()
+        {
+            possibleTargets.RemoveAll((ICombatCharacter character) => character.IsDead);
         }
     }
 }

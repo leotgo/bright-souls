@@ -1,22 +1,41 @@
 ﻿using UnityEngine;
 using Patterns.Observer;
 
-namespace BrightSouls
+namespace BrightSouls.Player
 {
     public sealed class PlayerCombatController : MonoBehaviour, IHitter, IHittable
     {
+        /* --------------------------------- Events --------------------------------- */
+
+        public delegate void OnLockedOn(ICombatCharacter target);
+        public event OnLockedOn onLockedOn;
+
         /* ------------------------------- Properties ------------------------------- */
 
-        public PlayerCombatData Data { get => data; }
-        public PlayerCombatEvents Events { get => events; }
-        public PlayerCombatCommands Commands { get => commands; }
+        public PlayerCombatData Data
+        {
+            get => data;
+        }
 
-        /* --------------------------------- Fields --------------------------------- */
+        public PlayerCombatEvents Events
+        {
+            get => events;
+        }
 
-        [SerializeField] private Player player;
+        public PlayerCombatCommands Commands
+        {
+            get => commands;
+        }
+
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
+
+        [SerializeField] private PlayerComponentIndex player;
         [SerializeField] private PlayerCombatData data;
-        [SerializeField] private PlayerCombatEvents events;
-        [SerializeField] private PlayerCombatCommands commands;
+
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
+        private PlayerCombatEvents events;
+        private PlayerCombatCommands commands;
 
         /* ------------------------- MonoBehaviour Callbacks ------------------------ */
 
@@ -28,10 +47,13 @@ namespace BrightSouls
 
         private void Update()
         {
+            // TODO Refactor this into a PlayerBody class, responsible for animation
             bool playerHasTarget = player.CameraDirector?.CurrentCamera?.IsLockOnCamera ?? false;
-            bool playerIsDodging = player.IsInAnyState(States.Dodging);
+            bool playerIsDodging = player.State.IsDodging;
             if (playerHasTarget && !playerIsDodging)
+            {
                 FaceTarget();
+            }
         }
 
         /* ----------------------------- Initialization ----------------------------- */
@@ -55,7 +77,7 @@ namespace BrightSouls
 
         public void OnGetHit(Attack attack)
         {
-            bool playerIsInvincible = player.Attributes.GetAttribute<StatusAttribute>().HasStatus(CharacterStatus.IFrames);
+            bool playerIsInvincible = player.Attributes.Status.HasStatus(CharacterStatus.IFrames);
             if (playerIsInvincible)
             {
                 return;
@@ -72,7 +94,7 @@ namespace BrightSouls
             Debug.LogFormat("COMBAT: {0} got hit by {1} from {2}", player, attack.Source, attackSourceDirection);
 
             // Check blocking status
-            bool playerIsBlocking = player.IsInAnyState(States.Blocking);
+            bool playerIsBlocking = player.State.IsBlocking;
             bool hasSuccesfullyBlocked = CheckBlockSuccess(attack);
 
             // TODO separate behaviors in different functions
@@ -80,11 +102,11 @@ namespace BrightSouls
             if (playerIsBlocking && hasSuccesfullyBlocked)
             {
                 //player.Stamina.Value -= (float)attack.Data.BlockStaminaDamage;
-                if (player.Stamina.Value <= 0f)
+                if (player.Attributes.Stamina.Value <= 0f)
                 {
-                    events.RaiseOnBreakBlockEvent();
-                    //player.Health -= damage * data.BlockBreakDamageModifier;
-                    //player.Stagger.StaggerHealth -= player.Stagger.maxStaggerHealth;
+                    events.RaiseOnBlockBrokenEvent();
+                    //player.Health.Value -= damage * data.BlockBreakDamageModifier;
+                    //player.Poise.Value -= player.Poise.maxStaggerHealth;
                 }
                 else
                 {
@@ -94,11 +116,11 @@ namespace BrightSouls
             // Behavior 2: did not block attack
             else
             {
-                bool playerIsDead = player.IsInAnyState(States.Dead);
+                bool playerIsDead = player.State.IsDead;
                 if (!playerIsDead)
                 {
-                    //player.Health -= damage;
-                    //player.Stagger.StaggerHealth -= attack.Data.staggerDamage;
+                    //player.Health.Value -= damage;
+                    //player.Poise.Value -= attack.Data.staggerDamage;
                     events.RaiseOnTakeDamageEvent();
                 }
             }
@@ -113,8 +135,8 @@ namespace BrightSouls
         /// </summary>
         private bool CheckBlockSuccess(Attack attack)
         {
-            Character enemy = attack.Source;
-            var dirPlayerForward = player.GetDirectionInXZPlane();
+            ICombatCharacter enemy = attack.Source;
+            var dirPlayerForward = player.Motor.GetDirectionInXZPlane();
             var dirPlayerToEnemy = (enemy.transform.position - player.transform.position).normalized;
             float angle = Vector3.Angle(dirPlayerForward, dirPlayerToEnemy);
             return angle < data.MaximumBlockAngle;

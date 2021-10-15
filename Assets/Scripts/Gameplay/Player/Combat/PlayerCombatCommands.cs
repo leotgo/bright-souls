@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BrightSouls
+namespace BrightSouls.Player
 {
     public sealed class PlayerCombatCommands
     {
@@ -8,7 +8,7 @@ namespace BrightSouls
         public DefendCommand Defend { get; private set; }
         public DodgeCommand Dodge { get; private set; }
 
-        public PlayerCombatCommands(Player player)
+        public PlayerCombatCommands(PlayerComponentIndex player)
         {
             Attack = new AttackCommand(player);
             Defend = new DefendCommand(player);
@@ -17,21 +17,17 @@ namespace BrightSouls
 
         public class AttackCommand : PlayerCommand<int>
         {
-            public AttackCommand(Player owner) : base(owner) { }
+            public AttackCommand(PlayerComponentIndex owner) : base(owner) { }
 
-            private readonly States[] commandBlockerStates =
-            {
-                States.Dodging,
-                States.Jumping,
-                States.Blocking,
-                States.Stagger,
-                States.Dead
-            };
 
             public override bool CanExecute()
             {
                 bool playerHasStamina = player.Stamina.Value > 0f;
-                bool playerIsAbleToAttack = !player.IsInAnyState(commandBlockerStates);
+                bool playerIsAbleToAttack = !player.IsDodging   &&
+                                            !player.IsBlocking  &&
+                                            !player.IsJumping   &&
+                                            !player.IsStaggered &&
+                                            !player.IsDead;
                 return playerHasStamina && playerIsAbleToAttack;
             }
 
@@ -47,24 +43,15 @@ namespace BrightSouls
 
         public class DefendCommand : PlayerCommand<bool>
         {
-            public DefendCommand(Player owner) : base(owner) { }
-
-            private readonly States[] commandBlockerStates =
-            {
-                States.Attacking,
-                States.Dodging,
-                States.Falling,
-                States.Jumping,
-                States.Landing,
-                States.Comboing,
-                States.ComboEnding,
-                States.Stagger,
-                States.Dead
-            };
+            public DefendCommand(PlayerComponentIndex owner) : base(owner) { }
 
             public override bool CanExecute()
             {
-                bool playerIsAbleToDefend = !player.IsInAnyState(commandBlockerStates);
+                bool playerIsAbleToDefend = !player.IsAttacking &&
+                                            !player.IsDodging   &&
+                                            !player.IsJumping   &&
+                                            !player.IsStaggered &&
+                                            !player.IsDead;
                 return playerIsAbleToDefend;
             }
 
@@ -78,26 +65,17 @@ namespace BrightSouls
 
         public class DodgeCommand : PlayerCommand
         {
-            public DodgeCommand(Player player) : base(player) { }
-
-            private readonly States[] commandBlockerStates =
-            {
-                States.Attacking,
-                States.Dodging,
-                States.Falling,
-                States.Jumping,
-                States.Landing,
-                States.Comboing,
-                States.ComboEnding,
-                States.Blocking,
-                States.Stagger,
-                States.Dead
-            };
+            public DodgeCommand(PlayerComponentIndex player) : base(player) { }
 
             public override bool CanExecute()
             {
                 bool playerHasStamina = player.Stamina.Value > 0f;
-                bool playerIsAbleToDodge = !player.IsInAnyState(commandBlockerStates);
+                bool playerIsAbleToDodge = !player.IsAttacking &&
+                                           !player.IsDodging &&
+                                           !player.IsJumping &&
+                                           !player.IsStaggered &&
+                                           !player.IsBlocking &&
+                                           !player.IsDead;
                 return playerHasStamina && playerIsAbleToDodge;
             }
 
