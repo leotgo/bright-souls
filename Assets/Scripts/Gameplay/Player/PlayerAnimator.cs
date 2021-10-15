@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace BrightSouls
+namespace BrightSouls.Player
 {
     public class PlayerAnimator : MonoBehaviour
     {
         /* --------------------------------- Fields --------------------------------- */
 
-        [SerializeField] private Player player;
+        [SerializeField] private PlayerComponentIndex player;
         [SerializeField] private Animator anim;
 
         /* ------------------------- MonoBehaviour Callbacks ------------------------ */
@@ -14,7 +14,7 @@ namespace BrightSouls
         private void Start()
         {
             player.Combat.Events.onStagger += OnStagger;
-            player.Combat.Events.onDodgeExecuted += OnDodge;
+            player.Combat.Events.onDodge += OnDodge;
             player.Combat.Events.onBlockHit += OnBlockHit;
         }
 

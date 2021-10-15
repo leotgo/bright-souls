@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using BrightSouls.Player;
 
 namespace BrightSouls
 {
@@ -10,17 +11,17 @@ namespace BrightSouls
     {
         public override CinemachineVirtualCameraBase CinemachineCamera { get => virtualCamera; }
         public ChangeTargetCommand ChangeTarget { get; private set; }
-        public Character Target { get => lockOnTarget; }
+        public ICharacter Target { get => lockOnTarget; }
 
         public LockOnCommand lockOn;
 
         private CinemachineVirtualCamera virtualCamera;
-        private Character lockOnTarget;
+        private ICharacter lockOnTarget;
         private LockOnDetector lockOnDetector;
         //private bool lockOnTargetChanged = false;
         //private float lockOnDelay = 0f;
 
-        [SerializeField] private Player player;
+        [SerializeField] private PlayerComponentIndex player;
 
         public override void SetPriority (int value)
         {
@@ -47,7 +48,7 @@ namespace BrightSouls
 
         public class LockOnCommand : PlayerCommand
         {
-            public LockOnCommand (Player player) : base (player) { }
+            public LockOnCommand (PlayerComponentIndex player) : base (player) { }
 
             public override bool CanExecute ()
             {
@@ -65,7 +66,7 @@ namespace BrightSouls
 
         public class ChangeTargetCommand : PlayerCommand<Vector2>
         {
-            public ChangeTargetCommand (Player player) : base (player) { }
+            public ChangeTargetCommand (PlayerComponentIndex player) : base (player) { }
 
             public override bool CanExecute ()
             {

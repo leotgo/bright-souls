@@ -3,22 +3,61 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using BrightSouls.Player;
 
 namespace BrightSouls
 {
     public sealed class ThirdPersonCamera : PlayerCameraBase
     {
-        public override CinemachineVirtualCameraBase CinemachineCamera { get => freeLookCamera; }
-        public RotateCameraCommand Look { get; private set; }
+        /* ------------------------------- Definitions ------------------------------ */
 
-        [SerializeField] private Player player;
+        public sealed class RotateCameraCommand : PlayerCommand<Vector2>
+        {
+            private ThirdPersonCamera thirdPersonCamera = null;
+
+            public RotateCameraCommand(PlayerComponentIndex player) : base(player)
+            {
+                thirdPersonCamera = player.CameraDirector.GetCamera<ThirdPersonCamera>();
+            }
+
+            public override bool CanExecute()
+            {
+                return true;
+            }
+
+            public override void Execute(Vector2 input)
+            {
+                thirdPersonCamera.SetInputAxisValue(input);
+            }
+        }
+
+        /* ------------------------------- Properties ------------------------------- */
+
+        public override CinemachineVirtualCameraBase CinemachineCamera
+        {
+            get => freeLookCamera;
+        }
+
+        public RotateCameraCommand Look
+        {
+            get;
+            private set;
+        }
+
+        /* ------------------------ Inspector-assigned Fields ----------------------- */
+
+        [SerializeField] private PlayerComponentIndex player;
         [SerializeField] private CinemachineFreeLook freeLookCamera;
+
+        /* ------------------------------ Unity Events ------------------------------ */
 
         private void Start ()
         {
             InitializeCommands ();
             InitializeInput ();
         }
+
+        /* ----------------------------- Initialization ----------------------------- */
 
         private void InitializeCommands ()
         {
@@ -30,6 +69,8 @@ namespace BrightSouls
             var look = player.Input.currentActionMap.FindAction ("Look");
             look.performed += ctx => Look.Execute (look.ReadValue<Vector2> ());
         }
+
+        /* --------------------------- Core Functionality --------------------------- */
 
         public override void SetPriority (int value)
         {
@@ -48,24 +89,6 @@ namespace BrightSouls
             freeLookCamera.m_YAxis.m_MaxSpeed = y;
         }
 
-        public sealed class RotateCameraCommand : PlayerCommand<Vector2>
-        {
-            private ThirdPersonCamera m_thirdPersonCamera = null;
-
-            public RotateCameraCommand (Player player) : base (player)
-            {
-                m_thirdPersonCamera = player.CameraDirector.GetCamera<ThirdPersonCamera> ();
-            }
-
-            public override bool CanExecute ()
-            {
-                return true;
-            }
-
-            public override void Execute (Vector2 input)
-            {
-                m_thirdPersonCamera.SetInputAxisValue (input);
-            }
-        }
+        /* -------------------------------------------------------------------------- */
     }
 }

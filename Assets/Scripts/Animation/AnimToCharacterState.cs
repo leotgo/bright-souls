@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityPatterns.FiniteStateMachine;
 namespace BrightSouls
 {
     public class AnimToCharacterState : StateMachineBehaviour
     {
+        /* ------------------------------- Definitions ------------------------------ */
+
         public enum Condition
         {
             StateEnter,
@@ -13,17 +15,24 @@ namespace BrightSouls
             TransitionTo
         }
 
+        /* ------------------------------- Properties ------------------------------- */
+
         private bool IsNotTransitionCondition
         {
             get { return condition != Condition.TransitionTo; }
         }
 
-        private Character animatorOwner = null;
+        /* ------------------------ Inspector-assigned Fields ----------------------- */
 
-        public States targetState = States.Default;
-        public StateMachineType stateMachine = StateMachineType.Generic;
-        public Condition condition = Condition.StateEnter;
-        public string nextState = string.Empty;
+        [SerializeReference] private IState targetState;
+        [SerializeField] private Condition condition = Condition.StateEnter;
+        [SerializeField] private string nextState = string.Empty;
+
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
+        private IStateMachineOwner stateMachineOwner = null;
+
+        /* ------------------------------ Unity Events ------------------------------ */
 
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -38,8 +47,10 @@ namespace BrightSouls
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             if (condition == Condition.StateExit)
+            {
                 UpdateState(animator);
-            if (condition == Condition.TransitionTo)
+            }
+            else if (condition == Condition.TransitionTo)
             {
                 if (animator.GetCurrentAnimatorStateInfo(layerIndex).IsName(nextState))
                 {
@@ -48,16 +59,21 @@ namespace BrightSouls
             }
         }
 
+        /* --------------------------------- Helpers -------------------------------- */
+
         private void UpdateState(Animator animator)
         {
-            if (animatorOwner == null)
+            if (stateMachineOwner == null)
             {
-                animatorOwner = animator.GetComponent<Character>();
+                stateMachineOwner = animator.GetComponent<IStateMachineOwner>();
             }
             else
             {
-                animatorOwner.SetState(stateMachine, targetState);
+                // TODO Remove setting state machine in animator
+                // stateMachineOwner.SetState(targetState);
             }
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

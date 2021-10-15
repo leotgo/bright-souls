@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityPatterns.FiniteStateMachine;
 
-namespace BrightSouls
+namespace BrightSouls.Player
 {
-    public class PlayerStateDodging : State
+    public class PlayerStateDodging : PlayerState
     {
-        private Player player;
-
-        private void Start()
+        public override void OnStateEnter(StateMachineController controller)
         {
-            player = GetComponentInParent<Player>();
+            //player.Attributes.Poise.BonusHealth += player.Attributes.Poise.dodgeBonusHealth;
+            //player.Attributes.Stamina.Value -= player.Combat.Data.DodgeStaminaCost;
         }
 
-        public override void OnStateEnter()
+        public override void OnStateExit(StateMachineController controller)
         {
-            //player.Stagger.BonusHealth += player.Stagger.dodgeBonusHealth;
-            //player.Stamina.Value -= player.Combat.DodgeStaminaCost;
-        }
-
-        public override void OnStateExit()
-        {
-            player.Stagger.BonusHealth -= player.Stagger.dodgeBonusHealth;
+            //player.Attributes.Poise.BonusHealth -= player.Attributes.Poise.dodgeBonusHealth;
         }
     }
 }

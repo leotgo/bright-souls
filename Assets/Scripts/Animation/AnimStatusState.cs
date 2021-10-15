@@ -7,18 +7,22 @@ namespace BrightSouls
 
     public class AnimStatusState : StateMachineBehaviour
     {
-        private Character animatorOwner;
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        public bool activatedStatus = false;
+        [SerializeField] private CharacterStatus status;
+        [SerializeField] private float statusStartTime = 0.0f;
+        [SerializeField] private float statusEndTime   = 1.0f;
 
-        public CharacterStatus status;
+        /* ----------------------------- Runtime Fields ----------------------------- */
 
-        public float statusStartTime = 0.0f;
-        public float statusEndTime   = 1.0f;
+        private IAttributesContainerOwner attributesContainer;
+        private bool activatedStatus;
+
+        /* ---------------------- StateMachineBehaviour Events ---------------------- */
 
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            animatorOwner = animator.GetComponent<Character>();
+            attributesContainer = animator.GetComponent<IAttributesContainerOwner>();
             activatedStatus = false;
         }
 
@@ -27,12 +31,12 @@ namespace BrightSouls
             if (stateInfo.normalizedTime > statusStartTime && !activatedStatus)
             {
                 activatedStatus = true;
-                animatorOwner.Attributes.GetAttribute<StatusAttribute>().Value |= status;
+                attributesContainer.Attributes.GetAttribute<StatusAttribute>().Value |= status;
             }
             if (stateInfo.normalizedTime > statusEndTime && activatedStatus)
             {
                 activatedStatus = false;
-                animatorOwner.Attributes.GetAttribute<StatusAttribute>().Value &= ~status;
+                attributesContainer.Attributes.GetAttribute<StatusAttribute>().Value &= ~status;
             }
         }
 
@@ -40,5 +44,7 @@ namespace BrightSouls
         {
             activatedStatus = false;
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

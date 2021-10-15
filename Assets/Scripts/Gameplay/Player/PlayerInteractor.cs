@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BrightSouls
+namespace BrightSouls.Player
 {
     public class PlayerInteractor : MonoBehaviour
     {
