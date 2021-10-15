@@ -1,0 +1,80 @@
+@startuml Player Movement Components
+title Bright Souls - Player Movement Class Diagram
+
+class Player <MonoBehaviour> implements IMotorTarget {
+    +<<get>> PlayerMotor Motor
+    -- Events --
+    +event OnMove
+    +event OnHitGround
+    -- Unity Properties --
+    +<<get>> Transform transform
+    -- Unity Events --
+    -Start()
+    --
+    + Move(movement)
+}
+
+interface ICharacterMotor {
+    +<<get>> IMotorTarget Target
+    {abstract} MoveTarget(Vector3)
+}
+class PlayerMotor implements ICharacterMotor {
+    +<<get>> IMotorTarget Target
+    +MoveTarget(Vector3 direction)
+    -- Unity Events --
+    -Update()
+    -FixedUpdate()
+    -- Physics Updates --
+    -GravityUpdate()
+    -- Helpers --
+    -CheckGroundedStatus()
+    -CalculateFallDamage()
+}
+
+Player *-- PlayerMotor
+
+note bottom of PlayerBody : Handles\nanimation.
+
+class PlayerBody {
+    -- Unity Events --
+    -Update()
+    -- Event Delegates --
+    -OnMove(direction)
+    -OnHitGround()
+    -- Helpers --
+    -FacePosition(position)
+}
+
+Player --> PlayerBody : Event\nSignals
+
+package GameData <<Database>> {
+    class PlayerPhysicsData {
+        +<<get>> float MaxSpeed
+        +<<get>> float FallDamageMult
+    }
+}
+
+PlayerMotor *-- PlayerPhysicsData
+
+package UnityEngine <<Node>>  {
+    class CharacterController {
+        +<<get>> float Radius
+        +<<get>> float Height
+        +<<get>> float SkinWidth
+        +Move(movement)
+    }
+    abstract Physics {
+        {static} SphereCast(ray, radius)
+    }
+}
+
+PlayerMotor::CheckGroundedStatus --> Physics::SphereCast
+Player *-- CharacterController
+
+interface IMotorTarget {
+    +void Move(Vector3)
+}
+
+hide empty members
+scale 2
+@enduml

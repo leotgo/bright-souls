@@ -1,34 +1,68 @@
 @startuml Camera Details
-namespace Camera {
-    class PlayerCameraDirector <<MonoBehaviour>> {
-        +<<get>> CurrentCamera : PlayerCameraBase
-        -cameras : PlayerCameraBase[]
-        +AddCamera()
-        +GetCamera()
-        -BringCameraToFront()
-    }
+title Bright Souls - Camera System Diagram\n
 
-    abstract PlayerCameraBase <<MonoBehaviour>> {
-        +<<get>> CinemachineCamera : CinemachineVirtualCameraBase
-        +<<get>> IsLockOnCamera : bool
-        +<<get>> IsThirdPersonCamera : bool
-        +SetPriority()
+package Cinemachine {
+    class CinemachineBrain <<Component>> {
+        +<<get>> VirtualCameras
+        +<<get>> Triggers
+        +<<get>> Transitions
     }
-
-    class LockOnCamera implements PlayerCameraBase {
-        +<<get>> ChangeTarget : Command
-        +<<get>> LockOnTarget : Transform
+    abstract CinemachineVirtualCamera <<Component>> {
+        +<<get>> FollowTarget
+        +<<get>> LookAtTarget
+        -- Body Properties --
+        +<<get>> TransposingStrategy
+        -- Aim Properties --
+        +<<get>> ComposingStrategy
     }
-
-    class ThirdPersonCamera implements PlayerCameraBase {
-        +<<get>> Look : Command
-        -freeLookCamera : CinemachineFreeLook
-        -SetInputAxisValue(input : Vector2)
-        -SetMaxSpeed(speed : Vector2)
-    }
-
-    PlayerCameraDirector "1" o-- "1..*" PlayerCameraBase
 }
 
+note right : We use the VirtualCamera\nclass for Orbital and LockOn\ncameras, but each have\ndifferent Tranposing and\nComposing strategies.
+
+package UnityEngine {
+    class MainCamera << (O,orchid) GameObject>> {
+    }
+}
+
+MainCamera *-- CinemachineBrain
+CinemachineBrain "1" *-- "1..n" CinemachineVirtualCamera
+
+class Player <<MonoBehaviour>> {
+    +event OnDisableLockOn
+    +event OnLockOnTarget
+    +event OnTargetDeath
+}
+
+Player -r-> CinemachineBrain : Signals
+
+abstract PlayerCameraBehaviour <<MonoBehaviour>> {
+    - {abstract} Initialize()
+    - {abstract} ReadInput()
+}
+
+CinemachineVirtualCamera *-- PlayerCameraBehaviour
+
+class PlayerCameraDirector <<MonoBehaviour>> {
+    +<<get>> CameraMode
+    -UpdateActiveCameras()
+}
+
+Player --> PlayerCameraDirector : Signals
+PlayerCameraDirector --> "Manage   \nActivation   " PlayerCameraBehaviour::Initialize
+
+class LockOnCamera implements PlayerCameraBehaviour {
+    +<<get>> LockOnTarget
+    -Initialize()
+    -ReadInput()
+    -ChangeTarget()
+}
+
+class OrbitalCamera implements PlayerCameraBehaviour {
+    -Initialize()
+    -ReadInput()
+    -Rotate()
+}
+
+scale 2
 hide empty members
 @enduml

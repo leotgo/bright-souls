@@ -1,33 +1,19 @@
 @startuml Attributes
-title Attributes System Overview
+title Attributes System Class Diagram
 
-interface IActor 
-IActor "1" o-- "0..*" AttributesContainer
+class Player
+Player o-u- PlayerAttributeContainer
 
-abstract Character implements IActor
-Character o-- CharacterBehaviourAttributes
-
-class Player implements Character
-Player o-- PlayerCombatAttributes
-
-interface IActorAttribute
-abstract ActorAttribute<T : ValueType> extends IActorAttribute  {
+interface ICharacterAttribute {
+}
+abstract CharacterAttribute<T : ValueType> extends ICharacterAttribute  {
     +<<get/set>>Value : T
     +onAttributeChanged : event
 }
 
-class HealthAttribute<float> implements ActorAttribute 
-class StaminaAttribute<float> implements ActorAttribute 
-class PoiseAttribute<float> implements ActorAttribute
-
-enum CharacterFaction {
-    Player
-    Ghouls
-    Skeletons
-    Knights
-}
-class FactionAttribute<CharacterFaction> implements ActorAttribute
-FactionAttribute o-- CharacterFaction
+class HealthAttribute<float> implements CharacterAttribute
+class StaminaAttribute<float> implements CharacterAttribute
+class PoiseAttribute<float> implements CharacterAttribute
 
 enum CharacterStatus {
     None
@@ -35,24 +21,21 @@ enum CharacterStatus {
     IFrames
     Unstoppable
 }
-class StatusAttribute<CharacterStatus> implements ActorAttribute
+class StatusAttribute<CharacterStatus> implements CharacterAttribute
 StatusAttribute o-- CharacterStatus
 
 abstract AttributesContainer
 {
-    +GetAttributes() : IActorAttribute[]
-    +GetAttribute<T>() : T is IActorAttribute
+    +GetAttributes() : ICharacterAttribute[]
+    +GetAttribute<T>() : T is ICharacterAttribute
 }
-AttributesContainer "1" o-- "1..*" IActorAttribute
+AttributesContainer "1" o-- "1..*" ICharacterAttribute
 
-class PlayerCombatAttributes implements AttributesContainer
-PlayerCombatAttributes o-- HealthAttribute
-PlayerCombatAttributes o-- StaminaAttribute
-PlayerCombatAttributes o-- PoiseAttribute
-
-class CharacterBehaviourAttributes implements AttributesContainer 
-CharacterBehaviourAttributes o-- FactionAttribute
-CharacterBehaviourAttributes o-- StatusAttribute
+class PlayerAttributeContainer
+PlayerAttributeContainer o-u- StatusAttribute
+PlayerAttributeContainer o-u- HealthAttribute
+PlayerAttributeContainer o-u- StaminaAttribute
+PlayerAttributeContainer o-u- PoiseAttribute
 
 scale 1.3
 hide empty members
