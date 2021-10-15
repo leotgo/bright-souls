@@ -23,7 +23,7 @@ namespace BrightSouls.AI
         {
             Vector3 dir = (other.transform.position - transform.position).normalized;
             Ray r = new Ray(transform.position, dir);
-            Character otherCharacter = other.GetComponent<Character>();
+            ICombatCharacter otherCharacter = other.GetComponent<ICombatCharacter>();
             if (otherCharacter != null)
             {
                 owner.Target = otherCharacter;

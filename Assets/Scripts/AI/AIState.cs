@@ -1,36 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityPatterns.FiniteStateMachine;
 
 namespace BrightSouls.AI
 {
-
-    public class AIState : State
+    public class AIBehaviourState : IState
     {
+        [SerializeReference] private AIBehaviour behaviour;
 
-        private AIBehaviour behaviour;
-
-        void Start ()
+        public void OnStateEnter(StateMachineController controller)
         {
-            behaviour = GetComponent<AIBehaviour>();
+            var agent = controller.GetComponent<AICharacter>();
+            behaviour?.OnBehaviourStart(agent);
         }
 
-        public override void OnStateEnter()
+        public void OnStateUpdate(StateMachineController controller)
         {
-            if (behaviour)
-                behaviour.BehaviourStart();
+            var agent = controller.GetComponent<AICharacter>();
+            behaviour?.OnBehaviourUpdate(agent);
         }
 
-        public override void OnStateUpdate()
+        public void OnStateExit(StateMachineController controller)
         {
-            if (behaviour)
-                behaviour.BehaviourUpdate();
-        }
-
-        public override void OnStateExit()
-        {
-            if (behaviour)
-                behaviour.BehaviourEnd();
+            var agent = controller.GetComponent<AICharacter>();
+            behaviour?.OnBehaviourEnd(agent);
         }
     }
 }

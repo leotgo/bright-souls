@@ -7,22 +7,29 @@ namespace BrightSouls.AI
 
     public class AIBehaviourDead : AIBehaviour
     {
-
-        public override void BehaviourStart()
+        public override void OnBehaviourStart(AICharacter agent)
         {
-            owner.enabled = false;
-            foreach (Collider c in owner.GetComponentsInChildren<Collider>())
-                c.enabled = false;
+            agent.enabled = false;
+            DisableAllColliders(agent.gameObject);
         }
 
-        public override void BehaviourUpdate()
+        public override void OnBehaviourUpdate(AICharacter agent)
         {
-
+            // Do nothing
         }
 
-        public override void BehaviourEnd()
+        public override void OnBehaviourEnd(AICharacter agent)
         {
+            // Do nothing
+        }
 
+        private void DisableAllColliders(GameObject go)
+        {
+            var allColliders = go.GetComponentsInChildren<Collider>();
+            foreach (var collider in allColliders)
+            {
+                collider.enabled = false;
+            }
         }
     }
 }

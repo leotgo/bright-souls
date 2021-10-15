@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Patterns.Observer;
+using UnityPatterns.FiniteStateMachine;
 using Helpers.Timing;
+using BrightSouls;
+using BrightSouls.Player;
 
 namespace BrightSouls.AI
 {
+    // TODO Rename AICharacter class to AIAgent
     [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
-    public class AICharacter : Character, IHitter, IHittable
+    public class AICharacter : MonoBehaviour, IStateMachineOwner, IHitter, IHittable
     {
+        /* ------------------------------- Definitions ------------------------------ */
+
         public enum AIMovementControlType
         {
             NavAgent,
             Behavior,
             Animator
         }
+
+        /* ------------------------------- Properties ------------------------------- */
 
         public NavMeshAgent NavAgent
         {
@@ -27,10 +35,11 @@ namespace BrightSouls.AI
             get => animator;
         }
 
+        // TODO Separate movement-related fields to AIAgentMotor class
         public float CurrentMoveSpeed
         {
-            get => _currentMoveSpeed;
-            set => _currentMoveSpeed = value;
+            get => currentMoveSpeed;
+            set => currentMoveSpeed = value;
         }
 
         public float RunMoveSpeed
@@ -45,15 +54,14 @@ namespace BrightSouls.AI
 
         public Vector2 Movement
         {
-
-            get => _movement;
-            set => _movement = value;
+            get => movement;
+            set => movement = value;
         }
 
-        public Character Target
+        public ICombatCharacter Target
         {
-            get => _target;
-            set => _target = value;
+            get => target;
+            set => target = value;
         }
 
         public bool HasTarget
@@ -61,71 +69,54 @@ namespace BrightSouls.AI
             get => Target != null;
         }
 
-        public override AttributesContainer Attributes
+        public AttributesContainer Attributes
         {
             get => attributes;
         }
 
-        // Events
+        public StateMachineController Fsm
+        {
+            // TODO Implement State Machine for AI Characters
+            get => null;
+        }
+
+        /* --------------------------------- Events --------------------------------- */
+
         public delegate void OnStartAttackHandler();
         public event OnStartAttackHandler onStartAttack;
 
-        // Component Refs
+        /* -------------------------- Component References -------------------------- */
+
         [SerializeField] private NavMeshAgent navAgent;
         [SerializeField] private Animator animator;
 
-        // Inspector-assigned values
+        /* ------------------------ Inspector-assigned Fields ----------------------- */
+
         [SerializeField] private float walkMoveSpeed = 2f;
         [SerializeField] private float runMoveSpeed = 4f;
 
-        // Runtime
+        /* ----------------------------- Runtime Fields ----------------------------- */
+
         public int nextAttack = 0;
         private AttributesContainer attributes = new AttributesContainer();
-        private Character _target = null;
+        private ICombatCharacter target = null;
         private AIMovementControlType _movementType = AIMovementControlType.NavAgent;
-        private float _currentMoveSpeed = 4f;
-        private Vector2 _movement; // World-Space Movement Direction (X,Z) of AICharacter
+        private float currentMoveSpeed = 4f;
+        private Vector2 movement; // World-Space Movement Direction (X,Z) of AICharacter
 
-        public float GetDistanceToTarget()
+        /* ------------------------------ Unity Events ------------------------------ */
+
+        private void Update()
         {
-            if (HasTarget)
-            {
-                return Vector3.Distance(transform.position, Target.transform.position);
-            }
-            else
-            {
-                return Mathf.Infinity;
-            }
+            UpdateMove();
+            UpdateAcceleration();
         }
 
-        public Vector3 GetDirectionToTarget()
-        {
-            if (HasTarget)
-            {
-                return (Target.transform.position - transform.position).normalized;
-            }
-            else
-            {
-                return Vector3.zero;
-            }
-        }
-
-        public Vector3 GetDirectionToTargetPlanified()
-        {
-            if (HasTarget)
-            {
-                var dir = GetDirectionToTarget();
-                return (new Vector3(dir.x, 0f, dir.z)).normalized;
-            }
-            else
-            {
-                return Vector3.zero;
-            }
-        }
+        /* --------------------------- Core Functionality --------------------------- */
 
         public void OnGetHit(Attack attack)
         {
-            if (IsInAnyState(States.Dead))
+            if (this.Fsm.IsInState<PlayerStateDead>())
             {
                 return;
             }
@@ -170,22 +161,6 @@ namespace BrightSouls.AI
             weapon.OnAttack(attackId);
         }
 
-        public void ResetAllTriggers()
-        {
-            animator.ResetTrigger("hit");
-            animator.ResetTrigger("stagger");
-            animator.ResetTrigger("death");
-            animator.ResetTrigger("attack_light");
-            animator.ResetTrigger("attack_heavy");
-            animator.ResetTrigger("attack_dash");
-        }
-
-        private void Update()
-        {
-            UpdateMove();
-            UpdateAcceleration();
-        }
-
         private void UpdateMove()
         {
             navAgent.speed = Mathf.Lerp(navAgent.speed, CurrentMoveSpeed, navAgent.acceleration * Time.deltaTime);
@@ -216,5 +191,57 @@ namespace BrightSouls.AI
             y = Mathf.Lerp(y, Movement.y, navAgent.acceleration * Time.deltaTime);
             animator.SetFloat("move_y", y);
         }
+
+        /* --------------------------------- Helpers -------------------------------- */
+
+        public float GetDistanceToTarget()
+        {
+            if (HasTarget)
+            {
+                return Vector3.Distance(transform.position, Target.transform.position);
+            }
+            else
+            {
+                return Mathf.Infinity;
+            }
+        }
+
+        public Vector3 GetDirectionToTarget()
+        {
+            if (HasTarget)
+            {
+                return (Target.transform.position - transform.position).normalized;
+            }
+            else
+            {
+                return Vector3.zero;
+            }
+        }
+
+        public Vector3 GetDirectionToTargetPlanified()
+        {
+            if (HasTarget)
+            {
+                var dir = GetDirectionToTarget();
+                return (new Vector3(dir.x, 0f, dir.z)).normalized;
+            }
+            else
+            {
+                return Vector3.zero;
+            }
+        }
+
+        // TODO Call this on all AI State Transitions
+        public void ResetAllTriggers()
+        {
+            animator.ResetTrigger("hit");
+            animator.ResetTrigger("stagger");
+            animator.ResetTrigger("death");
+            animator.ResetTrigger("attack_light");
+            animator.ResetTrigger("attack_heavy");
+            animator.ResetTrigger("attack_dash");
+        }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

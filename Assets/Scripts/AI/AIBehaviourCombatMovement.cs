@@ -2,56 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
+using BrightSouls.Player;
 
 namespace BrightSouls.AI
 {
     public class AIBehaviourCombatMovement : AIBehaviour
     {
-        // Public Fields
-        public float minTargetDistance = 1.5f;
-        public float maxTargetDistance = 5f;
-        public float idealTargetDistance = 4f;
-        public float idealTargetDistanceThreshold = 0.2f;
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        private float turnSpeed = 4f;
-
-        // Inspector-assigned values
+        [SerializeField] private float minTargetDistance = 1.5f;
+        [SerializeField] private float maxTargetDistance = 5f;
+        [SerializeField] private float idealTargetDistance = 4f;
+        [SerializeField] private float idealTargetDistanceThreshold = 0.2f;
+        [SerializeField] private float turnSpeed = 4f;
         [SerializeField] private float minimalAttackCooldown = 0.5f;
         [SerializeField] private float defaultAttackCooldown = 3f;
-        public float defenseDelay = 1.5f;
-        public float dodgeChance = 0.35f;
+        [SerializeField] private float defenseDelay = 1.5f;
+        [SerializeField] private float dodgeChance = 0.35f;
+        [SerializeField] private float dashAttackThreshold = 4f;
+        [SerializeField] private int   lightAttackChance = 70;
 
-        private float dashAttackThreshold = 4f;
-        private int   lightAttackChance = 70;
-        private bool  isAdjustingDistance = false;
+        /* ----------------------------- Runtime Fields ----------------------------- */
 
-        public override void BehaviourStart()
+        private bool isAdjustingDistance = false;
+
+        /* -------------------------- State Machine Events -------------------------- */
+
+        public override void OnBehaviourStart(AICharacter agent)
         {
             isAdjustingDistance = false;
-            owner.SetMovementControl(AICharacter.AIMovementControlType.Animator);
-            owner.Movement = Vector2.zero;
-            owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
+            agent.SetMovementControl(AICharacter.AIMovementControlType.Animator);
+            agent.Movement = Vector2.zero;
+            agent.CurrentMoveSpeed = agent.WalkMoveSpeed;
         }
 
-        public override void BehaviourUpdate()
+        public override void OnBehaviourUpdate(AICharacter agent)
         {
-            LookAtTarget();
-            AdjustCombatDistance();
-            ChooseAttack();
+            LookAtTarget(agent);
+            AdjustCombatDistance(agent);
+            ChooseAttack(agent);
         }
 
-        public override void BehaviourEnd()
+        public override void OnBehaviourEnd(AICharacter agent)
         {
         }
 
-        private void LookAtTarget()
+        /* --------------------------------- Helpers -------------------------------- */
+
+        private void LookAtTarget(AICharacter agent)
         {
-            owner.transform.rotation = Quaternion.Lerp(owner.transform.rotation, Quaternion.LookRotation(owner.GetDirectionToTarget(), Vector3.up), turnSpeed * Time.deltaTime);
+            agent.transform.rotation = Quaternion.Lerp(agent.transform.rotation, Quaternion.LookRotation(agent.GetDirectionToTarget(), Vector3.up), turnSpeed * Time.deltaTime);
         }
 
-        private void AdjustCombatDistance()
+        private void AdjustCombatDistance(AICharacter agent)
         {
-            float dist = owner.GetDistanceToTarget();
+            float dist = agent.GetDistanceToTarget();
             float distanceDiff = Mathf.Abs(dist - idealTargetDistance);
 
             if (isAdjustingDistance)
@@ -59,8 +64,8 @@ namespace BrightSouls.AI
                 if (distanceDiff < idealTargetDistanceThreshold)
                 {
                     isAdjustingDistance = false;
-                    owner.CurrentMoveSpeed = 0f;
-                    owner.Movement = new Vector2(owner.Movement.x, 0f);
+                    agent.CurrentMoveSpeed = 0f;
+                    agent.Movement = new Vector2(agent.Movement.x, 0f);
                 }
             }
             else
@@ -68,53 +73,55 @@ namespace BrightSouls.AI
                 if (dist > maxTargetDistance)
                 {
                     isAdjustingDistance = true;
-                    owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
-                    owner.Movement = new Vector2(owner.Movement.x, 0.5f);
+                    agent.CurrentMoveSpeed = agent.WalkMoveSpeed;
+                    agent.Movement = new Vector2(agent.Movement.x, 0.5f);
                 }
                 else if (dist < minTargetDistance)
                 {
                     isAdjustingDistance = true;
-                    owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
-                    owner.Movement = new Vector2(owner.Movement.x, -0.5f);
+                    agent.CurrentMoveSpeed = agent.WalkMoveSpeed;
+                    agent.Movement = new Vector2(agent.Movement.x, -0.5f);
                 }
             }
         }
 
-        private void ChooseAttack()
+        private void ChooseAttack(AICharacter agent)
         {
-            bool attackOnCooldown = fsm.CurrentStateTime < defaultAttackCooldown;
-            bool comboOnCooldown = fsm.CurrentStateTime < minimalAttackCooldown;
-            bool isInRange = owner.GetDistanceToTarget() < maxTargetDistance;
-            bool isOnCombo = owner.Target.IsInAnyState(States.Attacking, States.Comboing);
-            bool canAttack = !attackOnCooldown || (isOnCombo && isInRange && !comboOnCooldown);
+            bool attackOnCooldown = agent.Fsm.CurrentStateTime < defaultAttackCooldown;
+            bool comboOnCooldown = agent.Fsm.CurrentStateTime < minimalAttackCooldown;
+            bool isInRange = agent.GetDistanceToTarget() < maxTargetDistance;
+            bool targetIsAttacking = agent.Target.IsAttacking;
+            bool canAttack = !attackOnCooldown || (targetIsAttacking && isInRange && !comboOnCooldown);
             if (canAttack)
             {
-                if (owner.Target.IsInAnyState(States.Blocking))
+                if (agent.Target.IsBlocking)
                 {
                     int rand = Random.Range(0, 100);
-                    owner.nextAttack = rand < 30 ? 0 : 1;
+                    agent.nextAttack = rand < 30 ? 0 : 1;
                 }
                 else
                 {
-                    if (owner.GetDistanceToTarget() > idealTargetDistance + dashAttackThreshold)
+                    if (agent.GetDistanceToTarget() > idealTargetDistance + dashAttackThreshold)
                     {
-                        owner.nextAttack = 2;
+                        agent.nextAttack = 2;
                     }
                     else
                     {
                         int rand = Random.Range(0, 100);
                         if (rand < lightAttackChance)
                         {
-                            owner.nextAttack = 0;
+                            agent.nextAttack = 0;
                         }
                         else
                         {
-                            owner.nextAttack = 1;
+                            agent.nextAttack = 1;
                         }
                     }
                 }
-                owner.Notify(Message.AI_StartAttack);
+                agent.Notify(Message.AI_StartAttack);
             }
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

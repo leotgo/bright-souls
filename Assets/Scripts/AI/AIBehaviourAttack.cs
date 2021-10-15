@@ -4,31 +4,38 @@ using UnityEngine;
 
 namespace BrightSouls.AI
 {
-
+    [System.Serializable]
     public class AIBehaviourAttack : AIBehaviour
     {
+        /* ----------------------- Inspector-Assigned Values; ----------------------- */
 
-        private float turnSpeed = 2.75f;
+        [SerializeField] private float turnSpeed = 2.75f;
 
-        public override void BehaviourStart()
+        /* -------------------------- State Machine Events -------------------------- */
+
+        public override void OnBehaviourStart(AICharacter agent)
         {
-            owner.SetMovementControl(AICharacter.AIMovementControlType.Animator);
-            owner.Attack(owner.nextAttack);
+            agent.SetMovementControl(AICharacter.AIMovementControlType.Animator);
+            agent.Attack(agent.nextAttack);
         }
 
-        public override void BehaviourUpdate()
+        public override void OnBehaviourUpdate(AICharacter agent)
         {
-            LookAtTarget();
+            LookAtTarget(agent);
         }
 
-        public override void BehaviourEnd()
+        public override void OnBehaviourEnd(AICharacter agent)
         {
 
         }
 
-        private void LookAtTarget()
+        /* --------------------------------- Helpers -------------------------------- */
+
+        private void LookAtTarget(AICharacter agent)
         {
-            owner.transform.rotation = Quaternion.Lerp(owner.transform.rotation, Quaternion.LookRotation(owner.GetDirectionToTarget(), Vector3.up), turnSpeed * Time.deltaTime);
+            agent.transform.rotation = Quaternion.Lerp(agent.transform.rotation, Quaternion.LookRotation(agent.GetDirectionToTarget(), Vector3.up), turnSpeed * Time.deltaTime);
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }

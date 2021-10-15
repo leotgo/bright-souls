@@ -5,20 +5,10 @@ using UnityEngine;
 namespace BrightSouls.AI
 {
 
-    public abstract class AIBehaviour : MonoBehaviour
+    public abstract class AIBehaviour
     {
-
-        [HideInInspector] public AICharacter owner;
-        [HideInInspector] public AIStateMachine fsm;
-
-        public abstract void BehaviourStart();
-        public abstract void BehaviourUpdate();
-        public abstract void BehaviourEnd();
-
-        private void Start()
-        {
-            owner = GetComponentInParent<AICharacter>();
-            fsm   = GetComponentInParent<AIStateMachine>();
-        }
+        public abstract void OnBehaviourStart(AICharacter agent);
+        public abstract void OnBehaviourUpdate(AICharacter agent);
+        public abstract void OnBehaviourEnd(AICharacter agent);
     }
 }

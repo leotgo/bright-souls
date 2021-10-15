@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class State : MonoBehaviour {
-
-    public States stateType;
-
-    public virtual void OnStateEnter() { }
-    public virtual void OnStateUpdate() { }
-    public virtual void OnStateExit() { }
+namespace UnityPatterns.FiniteStateMachine
+{
+    public interface IState
+    {
+        void OnStateEnter(StateMachineController fsm);
+        void OnStateUpdate(StateMachineController fsm);
+        void OnStateExit(StateMachineController fsm);
+    }
 }

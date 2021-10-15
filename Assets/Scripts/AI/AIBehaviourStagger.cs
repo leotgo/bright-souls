@@ -8,17 +8,17 @@ namespace BrightSouls.AI
     public class AIBehaviourStagger : AIBehaviour
     {
 
-        public override void BehaviourStart()
+        public override void OnBehaviourStart(AICharacter agent)
         {
-            owner.ResetAllTriggers();
-            owner.SetMovementControl(AICharacter.AIMovementControlType.Animator);
+            agent.ResetAllTriggers();
+            agent.SetMovementControl(AICharacter.AIMovementControlType.Animator);
         }
 
-        public override void BehaviourUpdate()
+        public override void OnBehaviourUpdate(AICharacter agent)
         {
         }
 
-        public override void BehaviourEnd()
+        public override void OnBehaviourEnd(AICharacter agent)
         {
         }
     }

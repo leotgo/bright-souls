@@ -7,46 +7,55 @@ namespace BrightSouls.AI
 {
     public class AIBehaviourPatrolling : AIBehaviour
     {
-        public float reachDistance = 2f;
-        public Waypoint[] wayPoints;
+        /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
+        [SerializeField] private float reachDistance = 2f;
+        [SerializeField] private Waypoint[] wayPoints;
+
+        /* ------------------------------ Runtime Data ------------------------------ */
+
+        // TODO Assign/retrieve this data from state machine controller
         private float lastStoppingDistance = 0f;
         private float lastSpeed = 0f;
         private int currentWaypoint = 0;
 
-        public override void BehaviourStart()
+        /* -------------------------- State Machine Events -------------------------- */
+
+        public override void OnBehaviourStart(AICharacter agent)
         {
             if (wayPoints.Length == 0 || wayPoints == null)
             {
-                owner.Notify(Message.AI_ReachedWaypoint);
+                agent.Notify(Message.AI_ReachedWaypoint);
                 return;
             }
 
-            owner.SetMovementControl(AICharacter.AIMovementControlType.NavAgent);
+            agent.SetMovementControl(AICharacter.AIMovementControlType.NavAgent);
 
-            lastStoppingDistance = owner.NavAgent.stoppingDistance;
-            lastSpeed = owner.NavAgent.speed;
+            lastStoppingDistance = agent.NavAgent.stoppingDistance;
+            lastSpeed = agent.NavAgent.speed;
 
-            owner.NavAgent.stoppingDistance = reachDistance;
-            owner.CurrentMoveSpeed = owner.WalkMoveSpeed;
-            owner.NavAgent.SetDestination(wayPoints[GetNextWayPointId()].transform.position);
+            agent.NavAgent.stoppingDistance = reachDistance;
+            agent.CurrentMoveSpeed = agent.WalkMoveSpeed;
+            agent.NavAgent.SetDestination(wayPoints[GetNextWayPointId()].transform.position);
         }
 
-        public override void BehaviourUpdate()
+        public override void OnBehaviourUpdate(AICharacter agent)
         {
-            if (owner.NavAgent.remainingDistance < reachDistance)
+            if (agent.NavAgent.remainingDistance < reachDistance)
             {
-                owner.Notify(Message.AI_ReachedWaypoint);
-                owner.NavAgent.stoppingDistance = lastStoppingDistance;
-                owner.CurrentMoveSpeed = lastSpeed;
+                agent.Notify(Message.AI_ReachedWaypoint);
+                agent.NavAgent.stoppingDistance = lastStoppingDistance;
+                agent.CurrentMoveSpeed = lastSpeed;
             }
         }
 
-        public override void BehaviourEnd()
+        public override void OnBehaviourEnd(AICharacter agent)
         {
-            owner.NavAgent.stoppingDistance = lastStoppingDistance;
-            owner.CurrentMoveSpeed = lastSpeed;
+            agent.NavAgent.stoppingDistance = lastStoppingDistance;
+            agent.CurrentMoveSpeed = lastSpeed;
         }
+
+        /* --------------------------------- Helpers -------------------------------- */
 
         private int GetNextWayPointId()
         {
@@ -67,5 +76,7 @@ namespace BrightSouls.AI
             }
             return currentWaypoint - 1;
         }
+
+        /* -------------------------------------------------------------------------- */
     }
 }
