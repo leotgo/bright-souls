@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityPatterns.FiniteStateMachine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public enum PlayerStateEnum
     {

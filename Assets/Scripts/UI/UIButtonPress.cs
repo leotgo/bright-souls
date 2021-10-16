@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using BrightSouls.Player;
+using BrightSouls.Gameplay;
 
 namespace BrightSouls.UI
 {
@@ -36,7 +36,7 @@ namespace BrightSouls.UI
 
         /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Gameplay.Player player;
         [SerializeField] private Image img;
         [SerializeField] private Graphic[] graphicElements;
         [SerializeField] private MouseKeyboardDisplay mkDisplay = MouseKeyboardDisplay.Keyboard;

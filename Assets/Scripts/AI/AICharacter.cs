@@ -6,7 +6,7 @@ using Patterns.Observer;
 using UnityPatterns.FiniteStateMachine;
 using Helpers.Timing;
 using BrightSouls;
-using BrightSouls.Player;
+using BrightSouls.Gameplay;
 
 namespace BrightSouls.AI
 {

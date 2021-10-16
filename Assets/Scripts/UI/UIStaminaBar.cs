@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
-using BrightSouls.Player;
+using BrightSouls.Gameplay;
 using DuloGames.UI;
 
 namespace BrightSouls.UI

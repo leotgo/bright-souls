@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using BrightSouls.Player;
 
-namespace BrightSouls
+namespace BrightSouls.Gameplay
 {
     public sealed class ThirdPersonCamera : PlayerCameraBase
     {
@@ -15,7 +14,7 @@ namespace BrightSouls
         {
             private ThirdPersonCamera thirdPersonCamera = null;
 
-            public RotateCameraCommand(PlayerComponentIndex player) : base(player)
+            public RotateCameraCommand(Player player) : base(player)
             {
                 thirdPersonCamera = player.CameraDirector.GetCamera<ThirdPersonCamera>();
             }
@@ -46,7 +45,7 @@ namespace BrightSouls
 
         /* ------------------------ Inspector-assigned Fields ----------------------- */
 
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Gameplay.Player player;
         [SerializeField] private CinemachineFreeLook freeLookCamera;
 
         /* ------------------------------ Unity Events ------------------------------ */

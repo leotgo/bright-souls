@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public sealed class PlayerCombatCommands
     {
@@ -8,7 +8,7 @@ namespace BrightSouls.Player
         public DefendCommand Defend { get; private set; }
         public DodgeCommand Dodge { get; private set; }
 
-        public PlayerCombatCommands(PlayerComponentIndex player)
+        public PlayerCombatCommands(Player player)
         {
             Attack = new AttackCommand(player);
             Defend = new DefendCommand(player);
@@ -17,7 +17,7 @@ namespace BrightSouls.Player
 
         public class AttackCommand : PlayerCommand<int>
         {
-            public AttackCommand(PlayerComponentIndex owner) : base(owner) { }
+            public AttackCommand(Player owner) : base(owner) { }
 
 
             public override bool CanExecute()
@@ -43,7 +43,7 @@ namespace BrightSouls.Player
 
         public class DefendCommand : PlayerCommand<bool>
         {
-            public DefendCommand(PlayerComponentIndex owner) : base(owner) { }
+            public DefendCommand(Player owner) : base(owner) { }
 
             public override bool CanExecute()
             {
@@ -65,7 +65,7 @@ namespace BrightSouls.Player
 
         public class DodgeCommand : PlayerCommand
         {
-            public DodgeCommand(PlayerComponentIndex player) : base(player) { }
+            public DodgeCommand(Player player) : base(player) { }
 
             public override bool CanExecute()
             {

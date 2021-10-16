@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-namespace BrightSouls
+namespace BrightSouls.Gameplay
 {
     public sealed class PlayerCameraDirector : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using BrightSouls.Player;
+using BrightSouls.Gameplay;
 
 namespace BrightSouls.Telemetry
 {
@@ -42,7 +42,7 @@ namespace BrightSouls.Telemetry
             }
         }
 
-        [NonSerialized] public PlayerComponentIndex player;
+        [NonSerialized] public Gameplay.Player player;
 
         public float health;
         public float stamina;

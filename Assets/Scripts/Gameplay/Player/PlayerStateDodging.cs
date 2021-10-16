@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityPatterns.FiniteStateMachine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public class PlayerStateDodging : PlayerState
     {

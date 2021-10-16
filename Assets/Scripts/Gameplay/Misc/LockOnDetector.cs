@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Patterns.Observer;
-using BrightSouls.Player;
 
-namespace BrightSouls
+namespace BrightSouls.Gameplay
 {
     public class LockOnDetector : MonoBehaviour
     {
@@ -25,7 +24,7 @@ namespace BrightSouls
 
         private void Start()
         {
-            owner = GetComponentInParent<PlayerComponentIndex>();
+            owner = GetComponentInParent<Player>();
             possibleTargets = new List<ICombatCharacter>();
             initialized = true;
         }

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public abstract class PlayerCommandBase
     {
-        protected PlayerComponentIndex player;
+        protected Player player;
 
-        public PlayerCommandBase(PlayerComponentIndex owner)
+        public PlayerCommandBase(Player owner)
         {
             this.player = owner;
         }
@@ -18,20 +18,20 @@ namespace BrightSouls.Player
 
     public abstract class PlayerCommand : PlayerCommandBase
     {
-        public PlayerCommand(PlayerComponentIndex player) : base(player) { }
+        public PlayerCommand(Player player) : base(player) { }
         public abstract void Execute();
     }
 
     public abstract class PlayerCommand<T> : PlayerCommandBase {
 
-        public PlayerCommand(PlayerComponentIndex owner) : base(owner) { }
+        public PlayerCommand(Player owner) : base(owner) { }
         public abstract void Execute(T arg);
 
     }
 
     public abstract class PlayerCommand<T1,T2> : PlayerCommandBase
     {
-        public PlayerCommand(PlayerComponentIndex owner) : base(owner) { }
+        public PlayerCommand(Player owner) : base(owner) { }
         public abstract void Execute(T1 arg1, T2 arg2);
     }
 }

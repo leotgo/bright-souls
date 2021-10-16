@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public sealed class PlayerAttributeContainer : MonoBehaviour, IAttributesContainerOwner
     {

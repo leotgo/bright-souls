@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Patterns.Observer;
-using BrightSouls.Player;
+using BrightSouls.Gameplay;
 
 namespace BrightSouls.UI
 {

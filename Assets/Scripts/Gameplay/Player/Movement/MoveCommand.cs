@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public class MoveCommand : PlayerCommand<Vector2>
     {
-        public MoveCommand(PlayerComponentIndex owner) : base(owner) { }
+        public MoveCommand(Player owner) : base(owner) { }
 
         public override bool CanExecute()
         {

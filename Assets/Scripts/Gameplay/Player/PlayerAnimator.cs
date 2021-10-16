@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public class PlayerAnimator : MonoBehaviour
     {
         /* --------------------------------- Fields --------------------------------- */
 
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Player player;
         [SerializeField] private Animator anim;
 
         /* ------------------------- MonoBehaviour Callbacks ------------------------ */

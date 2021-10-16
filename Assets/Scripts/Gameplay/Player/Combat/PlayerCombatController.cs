@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Patterns.Observer;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
     public sealed class PlayerCombatController : MonoBehaviour, IHitter, IHittable
     {
@@ -29,7 +29,7 @@ namespace BrightSouls.Player
 
         /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Player player;
         [SerializeField] private PlayerCombatData data;
 
         /* ----------------------------- Runtime Fields ----------------------------- */

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
-    public sealed class PlayerComponentIndex : MonoBehaviour, ICombatCharacter
+    public sealed class Player : MonoBehaviour, ICombatCharacter
     {
         /* --------------------------- Component Accessors -------------------------- */
 

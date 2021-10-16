@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace BrightSouls.Player
+namespace BrightSouls.Gameplay
 {
-    [RequireComponent(typeof(PlayerComponentIndex))]
+    [RequireComponent(typeof(Player))]
     public class PlayerMotor : MonoBehaviour
     {
         /* ---------------------------- Type Definitions ---------------------------- */
@@ -44,7 +44,7 @@ namespace BrightSouls.Player
         /* ------------------------ Inspector-Assigned Fields ----------------------- */
 
         [Header("Component Refs")]
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Player player;
         [SerializeField] private CharacterController charController;
 
         [Header("Physics Data")]

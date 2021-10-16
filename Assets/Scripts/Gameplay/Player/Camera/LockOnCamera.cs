@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using BrightSouls.Player;
 
-namespace BrightSouls
+namespace BrightSouls.Gameplay
 {
     public sealed class LockOnCamera : PlayerCameraBase
     {
@@ -21,7 +20,7 @@ namespace BrightSouls
         //private bool lockOnTargetChanged = false;
         //private float lockOnDelay = 0f;
 
-        [SerializeField] private PlayerComponentIndex player;
+        [SerializeField] private Player player;
 
         public override void SetPriority (int value)
         {
@@ -48,7 +47,7 @@ namespace BrightSouls
 
         public class LockOnCommand : PlayerCommand
         {
-            public LockOnCommand (PlayerComponentIndex player) : base (player) { }
+            public LockOnCommand (Gameplay.Player player) : base (player) { }
 
             public override bool CanExecute ()
             {
@@ -66,7 +65,7 @@ namespace BrightSouls
 
         public class ChangeTargetCommand : PlayerCommand<Vector2>
         {
-            public ChangeTargetCommand (PlayerComponentIndex player) : base (player) { }
+            public ChangeTargetCommand (Gameplay.Player player) : base (player) { }
 
             public override bool CanExecute ()
             {

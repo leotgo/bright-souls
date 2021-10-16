@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-namespace BrightSouls
+namespace BrightSouls.Gameplay
 {
     public abstract class PlayerCameraBase : MonoBehaviour
     {
