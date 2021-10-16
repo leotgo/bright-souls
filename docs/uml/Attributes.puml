@@ -1,19 +1,26 @@
 @startuml Attributes
-title Attributes System Class Diagram
+title Attributes System Class Diagram\n
 
-class Player
-Player o-u- PlayerAttributeContainer
-
-interface ICharacterAttribute {
+class Player {
+    +<<get>> Health : HealthAttribute
+    +<<get>> Stamina : StaminaAttribute
+    +<<get>> Poise : PoiseAttribute
+    +<<get>> Status : StatusAttribute
+    +<<get>> Attributes : AttributesContainer
 }
-abstract CharacterAttribute<T : ValueType> extends ICharacterAttribute  {
-    +<<get/set>>Value : T
-    +onAttributeChanged : event
+Player *-- AttributesContainer
+
+interface IAttribute<T : ValueType> {
+    +<<get/set>> Value : T
+    +event OnAttributeChanged(T oldValue, T newValue)
 }
 
-class HealthAttribute<float> implements CharacterAttribute
-class StaminaAttribute<float> implements CharacterAttribute
-class PoiseAttribute<float> implements CharacterAttribute
+class HealthAttribute<float> implements IAttribute {
+    +<<get/set>> Value : float
+    +event OnAttributeChanged(float old, float new)
+}
+class StaminaAttribute<float> implements IAttribute
+class PoiseAttribute<float> implements IAttribute
 
 enum CharacterStatus {
     None
@@ -21,22 +28,30 @@ enum CharacterStatus {
     IFrames
     Unstoppable
 }
-class StatusAttribute<CharacterStatus> implements CharacterAttribute
+class StatusAttribute<CharacterStatus> implements IAttribute
 StatusAttribute o-- CharacterStatus
 
-abstract AttributesContainer
+class AttributesContainer
 {
-    +GetAttributes() : ICharacterAttribute[]
+    +<<get>> Attributes : IAttribute[]
     +GetAttribute<T>() : T is ICharacterAttribute
 }
-AttributesContainer "1" o-- "1..*" ICharacterAttribute
+AttributesContainer "1" o-- "1..*" IAttribute
 
-class PlayerAttributeContainer
-PlayerAttributeContainer o-u- StatusAttribute
-PlayerAttributeContainer o-u- HealthAttribute
-PlayerAttributeContainer o-u- StaminaAttribute
-PlayerAttributeContainer o-u- PoiseAttribute
+class UIHealthBar <<MonoBehaviour>> {
+    -OnHealthChanged(float old, float new)
+}
 
-scale 1.3
+PoiseAttribute --> PlayerBody : Change\nSignals
+
+class PlayerBody {
+    -OnPoiseChanged(float old, foat new)
+    -PerformStagger()
+}
+note left : Perform stagger\nanimation when\nPoise value is\nchanged to "0".
+
+HealthAttribute --> UIHealthBar : Change\nSignals
+
+scale 1.5
 hide empty members
 @enduml
