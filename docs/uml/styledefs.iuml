@@ -1,0 +1,29 @@
+scale 1.5
+hide empty members
+
+skinparam ClassFontStyle Bold
+
+skinparam ClassStereotypeFontName Dejavu Sans Mono
+skinparam ClassStereotypeFontSize 11
+skinparam ClassStereotypeFontStyle Normal
+
+skinparam ClassAttributeFontName Dejavu Sans Mono
+
+!$get    = "<color:gray><<get>></color>"
+!$getset = "<color:gray><<get/set>></color>"
+
+!procedure $sep($name)
+.. <color:gray> $name </color> ..
+!endprocedure
+
+!procedure $stereo($name)
+<<<color:gray>$name>>
+!endprocedure
+
+!procedure $params($names)
+<color:gray>$names</color>
+!endprocedure
+
+!procedure $type($name)
+<color:blue>$name</color>
+!endprocedure

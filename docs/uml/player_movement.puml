@@ -1,80 +1,93 @@
 @startuml Player Movement Components
-title Bright Souls - Player Movement Class Diagram
+!include styledefs.iuml
 
-class Player <MonoBehaviour> implements IMotorTarget {
-    +<<get>> PlayerMotor Motor
-    -- Events --
-    +event OnMove
-    +event OnHitGround
-    -- Unity Properties --
-    +<<get>> Transform transform
-    -- Unity Events --
-    -Start()
+title Bright Souls - Player Movement Class Diagram\n
+
+class Player $stereo("MonoBehaviour") implements IMotorTarget {
+    '
+    + $get $type("PlayerMotor") Motor
+    + $get $type("Transform")   transform
+    '
     --
-    + Move(movement)
+    + $type("event") OnMove()
+    + $type("event") OnHitGround()
+    '
+    --
+    + $type("void") Move(movement)
+    --
+    $sep("Unity")
+    - $type("void") Start()
+    '
 }
 
 interface ICharacterMotor {
-    +<<get>> IMotorTarget Target
-    {abstract} MoveTarget(Vector3)
+    + {abstract} $get $type("IMotorTarget") Target
+    '
+    + {abstract} $type("void") MoveTarget(direction)
 }
+
 class PlayerMotor implements ICharacterMotor {
-    +<<get>> IMotorTarget Target
-    +MoveTarget(Vector3 direction)
-    -- Unity Events --
-    -Update()
-    -FixedUpdate()
-    -- Physics Updates --
-    -GravityUpdate()
-    -- Helpers --
-    -CheckGroundedStatus()
-    -CalculateFallDamage()
+    '
+    + $get $type("IMotorTarget") Target
+    --
+    + $type("void") MoveTarget(direction)
+    --
+    '
+    $sep("Unity")
+    - $type("void") Update()
+    - $type("void") FixedUpdate()
+    '
+    $sep("Physics")
+    - $type("void") GravityUpdate()
+    '
+    $sep("Helpers")
+    - $type("void") CheckGroundedStatus()
+    - $type("void") CalculateFallDamage()
 }
-
-Player *-- PlayerMotor
-
-note bottom of PlayerBody : Handles\nanimation.
 
 class PlayerBody {
-    -- Unity Events --
-    -Update()
-    -- Event Delegates --
-    -OnMove(direction)
-    -OnHitGround()
-    -- Helpers --
-    -FacePosition(position)
+    '
+    $sep("Unity")
+    - $type("void") Update()
+    '
+    $sep("Event Delegates")
+    - $type("void") OnMove(direction)
+    - $type("void") OnHitGround()
+    '
+    $sep("Helpers")
+    - $type("void") FacePosition(position)
 }
-
-Player --> PlayerBody : Event\nSignals
 
 package GameData <<Database>> {
     class PlayerPhysicsData {
-        +<<get>> float MaxSpeed
-        +<<get>> float FallDamageMult
+        + $get $type("float") MaxSpeed
+        + $get $type("float") FallDamageMult
     }
 }
 
-PlayerMotor *-- PlayerPhysicsData
-
-package UnityEngine <<Node>>  {
+package UnityEngine {
     class CharacterController {
-        +<<get>> float Radius
-        +<<get>> float Height
-        +<<get>> float SkinWidth
-        +Move(movement)
+        + $get $type("float") Radius
+        + $get $type("float") Height
+        + $get $type("float") SkinWidth
+        '
+        + $type("void") Move(movement)
     }
     abstract Physics {
-        {static} SphereCast(ray, radius)
+        {static} $type("bool") SphereCast(ray, radius)
     }
 }
 
+interface IMotorTarget {
+    + {abstract} $type("void") Move(movement)
+}
+
+Player *-- PlayerMotor
+Player --> PlayerBody : Event\nSignals
+PlayerMotor *-- PlayerPhysicsData
 PlayerMotor::CheckGroundedStatus --> Physics::SphereCast
 Player *-- CharacterController
 
-interface IMotorTarget {
-    +void Move(Vector3)
-}
+note bottom of PlayerBody : Handles\nanimation.
 
-hide empty members
-scale 2
 @enduml

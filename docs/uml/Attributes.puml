@@ -1,57 +1,61 @@
 @startuml Attributes
+
+!include styledefs.iuml
+
 title Attributes System Class Diagram\n
 
 class Player {
-    +<<get>> Health : HealthAttribute
-    +<<get>> Stamina : StaminaAttribute
-    +<<get>> Poise : PoiseAttribute
-    +<<get>> Status : StatusAttribute
-    +<<get>> Attributes : AttributesContainer
+    + $get $type("HealthAttribute")  Health
+    + $get $type("StaminaAttribute") Stamina
+    + $get $type("PoiseAttribute")   Poise
+    + $get $type("StatusAttribute")  Status
+    ..
+    + $get $type("AttributesContainer") Attributes
 }
 Player *-- AttributesContainer
 
-interface IAttribute<T : ValueType> {
-    +<<get/set>> Value : T
-    +event OnAttributeChanged(T oldValue, T newValue)
+interface IAttribute < T : ValueType > {
+    + $getset $type("T") Value
+    + $type("event") OnAttributeChanged(oldValue,newValue)
 }
 
-class HealthAttribute<float> implements IAttribute {
-    +<<get/set>> Value : float
-    +event OnAttributeChanged(float old, float new)
-}
+class HealthAttribute<float> implements IAttribute
 class StaminaAttribute<float> implements IAttribute
 class PoiseAttribute<float> implements IAttribute
 
 enum CharacterStatus {
-    None
-    Staggered
-    IFrames
-    Unstoppable
+    0 = None
+    1 = Staggered
+    2 = IFrames
+    3 = Unstoppable
 }
 class StatusAttribute<CharacterStatus> implements IAttribute
 StatusAttribute o-- CharacterStatus
 
 class AttributesContainer
 {
-    +<<get>> Attributes : IAttribute[]
-    +GetAttribute<T>() : T is ICharacterAttribute
+    + $get $type("IAttribute[]") Attributes
+    + $type("T") GetAttribute<T>()
 }
+
+note left of AttributesContainer::GetAttribute
+T is IAttribute
+end note
+
 AttributesContainer "1" o-- "1..*" IAttribute
 
-class UIHealthBar <<MonoBehaviour>> {
-    -OnHealthChanged(float old, float new)
+class UIHealthBar $stereo("MonoBehaviour") {
+    - $type("void") OnHealthChanged(old, new)
 }
 
 PoiseAttribute --> PlayerBody : Change\nSignals
 
 class PlayerBody {
-    -OnPoiseChanged(float old, foat new)
-    -PerformStagger()
+    - $type("void") OnPoiseChanged(old,new)
+    - $type("void") PerformStagger()
 }
-note left : Perform stagger\nanimation when\nPoise value is\nchanged to "0".
+note left of PlayerBody : Perform stagger\nanimation when\nPoise value is\nchanged to "0".
 
 HealthAttribute --> UIHealthBar : Change\nSignals
 
-scale 1.5
-hide empty members
 @enduml

@@ -11,19 +11,16 @@ class Player <<MonoBehaviour>> {
 
 note "Details are hidden in\nseveral namespaces.\nCheck additional\ndiagrams for specific\ninformation." as N1
 
-!include Camera_Details.puml
 namespace Camera {
     .Player *-- PlayerCameraDirector
     hide members
 }
 
-!includesub Combat_Details.puml!PLAYER
 namespace Combat.Player {
     .Player *-- PlayerCombatController
     hide members
 }
 namespace Combat.Attributes {
-    remove ActorAttribute
     hide members
 }
 
