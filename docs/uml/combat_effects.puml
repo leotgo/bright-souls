@@ -1,0 +1,100 @@
+@startuml camera-details
+
+' ==========================
+'  Preamble
+' ==========================
+
+!include styledefs.iuml
+
+title Bright Souls - Combat Effects Class Diagram\n
+
+' ==========================
+'  Definitions
+' ==========================
+
+interface ICombatTarget
+{
+    $sep("Unity")
+    + {abstract} $get $type("Transform")        Transform
+    '
+    $sep("Attributes")
+    + {abstract} $get $type("HealthAttribute")  Health
+    + {abstract} $get $type("StaminaAttribute") Stamina
+    + {abstract} $get $type("PoiseAttribute")   Poise
+    '
+    $sep("Modifiers")
+    + {abstract} $get $type("ICombatEffectModifier[]") Modifiers
+}
+
+class BlockModifier implements ICombatEffectModifier
+{
+    + $get $type("float") Multiplier
+}
+
+class Attack
+{
+    + $get $type("ICombatEffect[]") Effects
+    + $type("void") OnHitTarget(target)
+}
+
+interface ICombatEffect
+{
+    + {abstract} $type("void") Apply()
+}
+
+interface ICombatEffectModifier
+{
+    + {abstract} $type("ICombatEffect") Modify(effect)
+}
+
+abstract InstantCombatEffect implements ICombatEffect
+{
+}
+
+abstract OvertimeCombatEffect implements ICombatEffect
+{
+    + $get $type("float") Duration
+    + $get $type("float") TickInterval
+    '
+    --
+    + {abstract} $type("void") ApplyTick()
+    '
+    --
+    - $type("IEnumerator") TickRoutine()
+}
+
+class AttackDamage extends InstantCombatEffect
+{
+    + $get $type("float") HealthDamage
+    + $get $type("float") StaminaDamage
+    + $get $type("float") PoiseDamage
+}
+
+class PoisonDamage extends OvertimeCombatEffect
+{
+    + $get $type("float") TotalDamage
+}
+
+' ==========================
+'  Relationships
+' ==========================
+
+Attack *-- ICombatEffect
+Attack --> ICombatTarget : Applies effects\nusing modifiers
+
+ICombatTarget *-- ICombatEffectModifier
+
+' ==========================
+'  Notes
+' ==========================
+
+note left of ICombatEffectModifier
+    Re-creates
+    CombatEffect
+    with modified
+    values.
+end note
+
+' ==========================
+
+@enduml

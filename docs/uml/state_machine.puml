@@ -1,35 +1,73 @@
-@startuml
-title State Machine Class Diagram
+@startuml state-machine
 
-class StateMachine {
-    +IsInState<StateType>() : bool
-    +SetState<StateType>()
-    +States : IState[]
-    +Transitions : StateTransition[]
-    +CurrentStateTime : float
-    +CurrentState : IState
+' ==========================
+'  Preamble
+' ==========================
+
+!include styledefs.iuml
+
+title State Machine Class Diagram\n
+
+' ==========================
+'  Definitions
+' ==========================
+
+class StateMachineController $stereo("MonoBehaviour")
+{
+    + $get $type("IState") CurrentState
+    + $get $type("float")  CurrentStateTime
 }
 
-class StateTransition {
-    +Source : IState
-    +Target : IState
-    +Condition : IStateTransitionCondition
+package GameData <<Database>>
+{
+    class StateMachine $stereo("ScriptableObject")
+    {
+        + $get $type("IState[]")          States
+        + $get $type("StateTransition[]") Transitions
+        '
+        + $type("bool") IsInState<T>()
+        + $type("void") SetState<T>()
+    }
+
+    class StateTransition
+    {
+        + $get $type("IState") Source
+        + $get $type("IState") Target
+        '
+        + $get $type("IStateTransitionCondition") Condition
+    }
+
+    interface IState
+    {
+        + $type("void") OnStateEnter()
+        + $type("void") OnStateUpdate()
+        + $type("void") OnStateExit()
+    }
+
+    interface IStateTransitionCondition
+    {
+        + $type("bool") Validate()
+    }
 }
 
-interface IState {
-    +OnStateEnter()
-    +OnStateUpdate()
-    +OnStateExit()
-}
+' ==========================
+'  Relationships
+' ==========================
 
-interface IStateTransitionCondition {
-    +Validate() : bool
-}
+StateMachineController *-- StateMachine
 
-StateMachine "1" o-- "n" IState
-StateMachine "1" o-- "n" StateTransition
+StateMachine    "1" o-- "n" IState
+StateMachine    "1" o-- "n" StateTransition
 StateTransition "1" o-- "n" IStateTransitionCondition
 
-scale 1.3
-hide empty members
+' ==========================
+'  Notes
+' ==========================
+
+note left of StateMachine::IsInState
+    T is IState
+end note
+
+' ==========================
+
 @enduml

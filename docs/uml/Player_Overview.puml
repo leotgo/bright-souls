@@ -1,27 +1,31 @@
 @startuml Player Overview
+
+' ==========================
+'  Preamble
+' ==========================
+
+!include styledefs.iuml
+
 title Bright Souls - Player Components Overview
 
-class Player <<MonoBehaviour>> {
-    +<<get>> Motor : PlayerMotor
-    +<<get>> Input : InputHandler
-    +<<get>> Interactor : PlayerInteractor
-    +<<get>> Combat : PlayerCombatController
-    +<<get>> Director : PlayerCameraDirector
-}
+' ==========================
+'  Definitions
+' ==========================
 
-note "Details are hidden in\nseveral namespaces.\nCheck additional\ndiagrams for specific\ninformation." as N1
+class Player $stereo("MonoBehaviour")
+{
+    + $get $type("PlayerMotor")          Motor
+    + $get $type("InputHandler")         Input
+    + $get $type("PlayerInteractor")     Interactor
+    + $get $type("PlayerCameraDirector") Director
+}
 
 namespace Camera {
     .Player *-- PlayerCameraDirector
-    hide members
 }
 
 namespace Combat.Player {
     .Player *-- PlayerCombatController
-    hide members
-}
-namespace Combat.Attributes {
-    hide members
 }
 
 namespace Movement {
@@ -51,13 +55,15 @@ namespace VFX {
     .Player *-- PlayerVFXHandler
 }
 
-package "FMOD Plugin" <<Node>> {
+package "FMOD Plugin" <<Node>>
+{
     component FMOD {
     }
     Audio.PlayerAudioEventHandler -- FMOD
 }
 
-package UnityEngine <<Node>> {
+package UnityEngine <<Node>>
+{
     component InputHandler {
     }
     component Animator {
@@ -66,7 +72,18 @@ package UnityEngine <<Node>> {
     .Player o-- InputHandler
 }
 
-hide GameData.Player
-hide empty members
-scale 2
+' ==========================
+'  Notes
+' ==========================
+
+note as N1
+    Details are hidden in
+    several namespaces.
+    Check additional
+    diagrams for specific
+    information.
+end note
+
+' ==========================
+
 @enduml

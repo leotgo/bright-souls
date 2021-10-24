@@ -1,3 +1,5 @@
+@startuml styledefs
+
 scale 1.5
 hide empty members
 
@@ -27,3 +29,5 @@ skinparam ClassAttributeFontName Dejavu Sans Mono
 !procedure $type($name)
 <color:blue>$name</color>
 !endprocedure
+
+@enduml

@@ -1,9 +1,19 @@
-@startuml Player Movement Components
+@startuml player-movement
+
+' ==========================
+'  Preamble
+' ==========================
+
 !include styledefs.iuml
 
 title Bright Souls - Player Movement Class Diagram\n
 
-class Player $stereo("MonoBehaviour") implements IMotorTarget {
+' ==========================
+'  Definitions
+' ==========================
+
+class Player $stereo("MonoBehaviour") implements IMotorTarget
+{
     '
     + $get $type("PlayerMotor") Motor
     + $get $type("Transform")   transform
@@ -20,13 +30,15 @@ class Player $stereo("MonoBehaviour") implements IMotorTarget {
     '
 }
 
-interface ICharacterMotor {
+interface ICharacterMotor
+{
     + {abstract} $get $type("IMotorTarget") Target
     '
     + {abstract} $type("void") MoveTarget(direction)
 }
 
-class PlayerMotor implements ICharacterMotor {
+class PlayerMotor implements ICharacterMotor
+{
     '
     + $get $type("IMotorTarget") Target
     --
@@ -45,7 +57,8 @@ class PlayerMotor implements ICharacterMotor {
     - $type("void") CalculateFallDamage()
 }
 
-class PlayerBody {
+class PlayerBody
+{
     '
     $sep("Unity")
     - $type("void") Update()
@@ -58,29 +71,40 @@ class PlayerBody {
     - $type("void") FacePosition(position)
 }
 
-package GameData <<Database>> {
-    class PlayerPhysicsData {
+package GameData <<Database>>
+{
+    class PlayerPhysicsData
+    {
         + $get $type("float") MaxSpeed
         + $get $type("float") FallDamageMult
     }
 }
 
-package UnityEngine {
-    class CharacterController {
+package UnityEngine
+{
+    class CharacterController
+    {
         + $get $type("float") Radius
         + $get $type("float") Height
         + $get $type("float") SkinWidth
         '
         + $type("void") Move(movement)
     }
-    abstract Physics {
+
+    abstract Physics
+    {
         {static} $type("bool") SphereCast(ray, radius)
     }
 }
 
-interface IMotorTarget {
+interface IMotorTarget
+{
     + {abstract} $type("void") Move(movement)
 }
+
+' ==========================
+'  Relationships
+' ==========================
 
 Player *-- PlayerMotor
 Player --> PlayerBody : Event\nSignals
@@ -88,6 +112,15 @@ PlayerMotor *-- PlayerPhysicsData
 PlayerMotor::CheckGroundedStatus --> Physics::SphereCast
 Player *-- CharacterController
 
-note bottom of PlayerBody : Handles\nanimation.
+' ==========================
+'  Notes
+' ==========================
+
+note bottom of PlayerBody
+    Handles
+    animation.
+end note
+
+' ==========================
 
 @enduml

@@ -1,10 +1,19 @@
-@startuml Attributes
+@startuml attributes-system
+
+' ==========================
+'  Preamble
+' ==========================
 
 !include styledefs.iuml
 
 title Attributes System Class Diagram\n
 
-class Player {
+' ==========================
+'  Definitions
+' ==========================
+
+class Player
+{
     + $get $type("HealthAttribute")  Health
     + $get $type("StaminaAttribute") Stamina
     + $get $type("PoiseAttribute")   Poise
@@ -12,10 +21,11 @@ class Player {
     ..
     + $get $type("AttributesContainer") Attributes
 }
-Player *-- AttributesContainer
 
-interface IAttribute < T : ValueType > {
+interface IAttribute < T : ValueType >
+{
     + $getset $type("T") Value
+    '
     + $type("event") OnAttributeChanged(oldValue,newValue)
 }
 
@@ -23,39 +33,61 @@ class HealthAttribute<float> implements IAttribute
 class StaminaAttribute<float> implements IAttribute
 class PoiseAttribute<float> implements IAttribute
 
-enum CharacterStatus {
+enum CharacterStatus
+{
     0 = None
     1 = Staggered
     2 = IFrames
     3 = Unstoppable
 }
+
 class StatusAttribute<CharacterStatus> implements IAttribute
-StatusAttribute o-- CharacterStatus
 
 class AttributesContainer
 {
     + $get $type("IAttribute[]") Attributes
+    '
     + $type("T") GetAttribute<T>()
 }
 
-note left of AttributesContainer::GetAttribute
-T is IAttribute
-end note
 
-AttributesContainer "1" o-- "1..*" IAttribute
 
-class UIHealthBar $stereo("MonoBehaviour") {
+class UIHealthBar $stereo("MonoBehaviour")
+{
     - $type("void") OnHealthChanged(old, new)
 }
 
-PoiseAttribute --> PlayerBody : Change\nSignals
-
-class PlayerBody {
+class PlayerBody
+{
     - $type("void") OnPoiseChanged(old,new)
     - $type("void") PerformStagger()
 }
-note left of PlayerBody : Perform stagger\nanimation when\nPoise value is\nchanged to "0".
 
+' ==========================
+'  Relationships
+' ==========================
+
+Player *-- AttributesContainer
+PoiseAttribute --> PlayerBody : Change\nSignals
+AttributesContainer "1" o-- "1..*" IAttribute
+StatusAttribute o-- CharacterStatus
 HealthAttribute --> UIHealthBar : Change\nSignals
+
+' ==========================
+'  Notes
+' ==========================
+
+note left of PlayerBody
+    Perform stagger
+    animation when
+    Poise value is
+    changed to "0".
+end note
+
+note left of AttributesContainer::GetAttribute
+    T is IAttribute
+end note
+
+' ==========================
 
 @enduml

@@ -1,23 +1,35 @@
-@startuml Combat Overview
+@startuml combat-system-overview
+
+' ==========================
+'  Preamble
+' ==========================
 
 !include styledefs.iuml
 
 title Bright Souls - Player-Related Combat Class Overview Diagram\n
 
-class Player $stereo("MonoBehaviour") {
+' ==========================
+'  Definitions
+' ==========================
+
+class Player $stereo("MonoBehaviour")
+{
 }
 
-abstract Attribute < T : ValueType > {
+abstract Attribute < T : ValueType >
+{
     + $getset $type("T") Value
     --
     + $type("event") OnValueChanged()
 }
 
-class Hitbox $stereo("MonoBehaviour") {
+class Hitbox $stereo("MonoBehaviour")
+{
     + $get $type("BoxCollider") Collider
 }
 
-interface ICombatCharacter {
+interface ICombatCharacter
+{
     '
     $sep("Attributes")
     + $get $type("HealthAttribute")  Health
@@ -29,7 +41,8 @@ interface ICombatCharacter {
     '
 }
 
-class Player implements ICombatCharacter {
+class Player implements ICombatCharacter
+{
     + $get $type("MaxHealthAttribute")  MaxHealth
     + $get $type("MaxStaminaAttribute") MaxStamina
     + $get $type("StaminaAttribute")    Stamina
@@ -37,40 +50,65 @@ class Player implements ICombatCharacter {
     + $get $type("StatusAttribute")     Status
 }
 
-interface ICombatEffect {
+interface ICombatEffect
+{
     + $type("void") Apply()
 }
 
-class Weapon $stereo("MonoBehaviour") {
-    + $get $type("Animset") AnimationSet
-    + $get $type("Hitbox")  WeaponHitbox
-    + $get $type("float")   Damage
+class Weapon $stereo("MonoBehaviour")
+{
+    + $get $type("Attack[]") Attacks
+    + $get $type("Hitbox")   WeaponHitbox
 }
 
-package GameData <<Database>> {
-    class PlayerCombatData $stereo("ScriptableObject") {
+package GameData <<Database>>
+{
+    class PlayerCombatData $stereo("ScriptableObject")
+    {
         $sep("Attributes")
         + $get $type("float") MaxHealth
         + $get $type("float") MaxStamina
         + $get $type("float") MaxPoise
+        '
         $sep("Actions")
         + $get $type("float") DodgeStaminaCost
         + $get $type("float") BlockDamageModifier
         + $get $type("float") MaxBlockAngle
+        '
         $sep("Animation")
         + $get $type("float") LockOnRotationSpeed
     }
 }
 
-Player *-- PlayerCombatData
-Player *-- Attribute
-Player *-- Hitbox
-Player *-r- Weapon
-Weapon *-- Hitbox
-PlayerCombatData -> Attribute
-ICombatEffect -u-> Attribute
+' ==========================
+'  Relationships
+' ==========================
 
-note right of ICombatEffect : Modifies\nattributes.
-note top of GameData: Data files\nloaded at\nruntime.
+Player *--  PlayerCombatData
+Player *--  Attribute
+Player *--  Hitbox
+Player *-r- Weapon
+
+PlayerCombatData -> Attribute
+ICombatEffect  -u-> Attribute
+
+Weapon *-- Hitbox
+
+' ==========================
+'  Notes
+' ==========================
+
+note right of ICombatEffect
+    Modifies
+    attributes.
+end note
+
+note top   of GameData
+    Data files
+    loaded at
+    runtime.
+end note
+
+' ==========================
 
 @enduml

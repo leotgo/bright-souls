@@ -1,0 +1,103 @@
+@startuml camera-details
+
+' ==========================
+'  Preamble
+' ==========================
+
+!include styledefs.iuml
+
+title Bright Souls - Camera System Diagram\n
+
+' ==========================
+'  Definitions
+' ==========================
+
+package Cinemachine
+{
+    class CinemachineBrain $stereo("Component")
+    {
+        + $get $type("CinemachineVirtualCamera[]") VirtualCameras
+        + $get $type("CinemachineSignal[]")        Triggers
+        + $get $type("CinemachineTransition[]")    Transitions
+    }
+
+    abstract CinemachineVirtualCamera $stereo("Component")
+    {
+        + $get $type("Transform") FollowTarget
+        + $get $type("Transform") LookAtTarget
+        $sep("Body Properties")
+        + $get $type("TransposingStrategy") Transposer
+        $sep("Aim Properties")
+        + $get $type("ComposingStrategy")   Composer
+    }
+}
+
+package UnityEngine
+{
+    class MainCamera <<(O,orchid)<color:gray>GameObject>>
+    {
+    }
+}
+
+class Player $stereo("MonoBehaviour")
+{
+    + $type("event") OnDisableLockOn()
+    + $type("event") OnLockOnTarget()
+    + $type("event") OnTargetDeath()
+}
+
+abstract PlayerCameraBehaviour $stereo("MonoBehaviour")
+{
+    - {abstract} $type("void") Initialize()
+    - {abstract} $type("void") ReadInput()
+}
+
+class PlayerCameraDirector $stereo("MonoBehaviour")
+{
+    + $get CameraMode
+    - $type("void") UpdateActiveCameras()
+}
+
+class LockOnCamera implements PlayerCameraBehaviour
+{
+    + $get $type("Transform") LockOnTarget
+    - $type("void") Initialize()
+    - $type("void") ReadInput()
+    - $type("void") ChangeTarget()
+}
+
+class OrbitalCamera implements PlayerCameraBehaviour
+{
+    - $type("void") Initialize()
+    - $type("void") ReadInput(x,y)
+    - $type("void") Rotate()
+}
+
+' ==========================
+'  Relationships
+' ==========================
+
+Player -r-> CinemachineBrain     : Signals
+Player  --> PlayerCameraDirector : Signals
+
+MainCamera                   *--        CinemachineBrain
+CinemachineBrain         "1" *-- "1..n" CinemachineVirtualCamera
+CinemachineVirtualCamera     *--        PlayerCameraBehaviour
+
+PlayerCameraDirector      --> "Manage   \nActivation   " PlayerCameraBehaviour::Initialize
+
+' ==========================
+'  Notes
+' ==========================
+
+note bottom of CinemachineVirtualCamera
+    We use the VirtualCamera
+    class for Orbital and LockOn
+    cameras, but each have
+    different Tranposing and
+    Composing strategies.
+end note
+
+' ==========================
+
+@enduml
